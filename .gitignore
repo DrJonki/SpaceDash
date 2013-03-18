@@ -13,6 +13,9 @@
 # Build results
 [Dd]ebug/
 [Rr]elease/
+ipch/
+*.exe
+*.rar
 *_i.c
 *_p.c
 *.ilk
@@ -24,6 +27,7 @@
 *.pgd
 *.rsp
 *.sbr
+*.sdf
 *.tlb
 *.tli
 *.tlh
