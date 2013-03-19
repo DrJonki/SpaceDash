@@ -16,57 +16,76 @@ Space Dash - A student project created with SFML
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
-
-#include <ctime>
-
 #include "SoundClass.h"
-
-#include <SFML/Audio.hpp>
 
 
 SoundClass::SoundClass(void)
 {
 	srand(time(NULL));
+
+	music.setVolume(0);
+	menuMusic.setVolume(0);
 }
 SoundClass::~SoundClass(void){}
 
 
 void SoundClass::updateMusic()
 {
+	if (music.getVolume() < 75) music.setVolume(music.getVolume() + 0.1);
+
 	if (music.getStatus() == sf::Music::Stopped){
 		int number = 1 + (int)rand()/((int)RAND_MAX/(7-(1)));
 
 		switch (number){
 			case 1:
-				music.openFromFile("Resources/Audio/Music1.wav");
+				music.openFromFile("Resources/Audio/music1.wav");
 				break;
 			case 2:
-				music.openFromFile("Resources/Audio/Music2.wav");
+				music.openFromFile("Resources/Audio/music2.wav");
 				break;
 			case 3:
-				music.openFromFile("Resources/Audio/Music3.wav");
+				music.openFromFile("Resources/Audio/music3.wav");
 				break;
 			case 4:
-				music.openFromFile("Resources/Audio/Music4.wav");
+				music.openFromFile("Resources/Audio/music4.wav");
 				break;
 			case 5:
-				music.openFromFile("Resources/Audio/Music5.wav");
+				music.openFromFile("Resources/Audio/music5.wav");
 				break;
 			case 6:
-				music.openFromFile("Resources/Audio/Music6.wav");
+				music.openFromFile("Resources/Audio/music6.wav");
 				break;
 			case 7:
-				music.openFromFile("Resources/Audio/Music7.wav");
+				music.openFromFile("Resources/Audio/music7.wav");
+				break;
+			case 8:
+				music.openFromFile("Resources/Audio/music.wav");
 				break;
 			default:
-				music.openFromFile("Resources/Audio/Music7.wav");
+				music.openFromFile("Resources/Audio/music7.wav");
 				break;
 		}
 		music.play();
 	}
 }
 
+void SoundClass::updateMenuMusic()
+{
+	if (menuMusic.getVolume() < 75) menuMusic.setVolume(menuMusic.getVolume() + 0.05);
+
+	if (menuMusic.getStatus() == sf::Music::Stopped){
+		menuMusic.openFromFile("Resources/Audio/menumusic.wav");
+		menuMusic.play();
+	}
+}
+
 void SoundClass::stopMusic()
 {
 	music.stop();
+	music.setVolume(0);
+}
+void SoundClass::stopMenuMusic()
+{
+	menuMusic.stop();
+	menuMusic.setVolume(0);
 }

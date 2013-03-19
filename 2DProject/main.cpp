@@ -16,26 +16,20 @@ Space Dash - A student project created with SFML
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
-#include <Windows.h>
-#include <ctime>
-
 #include "Player.h"
+#include "MenuClass.h"
 
-#include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-using namespace sf;
 
 namespace
 {
-	//Global objects
 	Player* object;
+	MenuClass menu;
 
 	RenderWindow* gameWindow;
-	RenderWindow* menuWindow;
 }
 
 //Function protos
-bool mainMenu();
 bool init();
 bool deInit();
 void update();
@@ -48,74 +42,34 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   LPSTR lpCmdLine, 
 				   int nCmdShow)
 {
-	object = new Player;
-	object->setRandomSeed(time(NULL));
+	while (menu.showMenu()){
+		object = new Player;
+		object->setRandomSeed(time(NULL));
 
-	if (!mainMenu()) object->setExitState(true);
+		sleep(milliseconds(200));
 
-	sleep(milliseconds(200));
+		if (!object->getExitState()){
+			//Init music
+			object->updateMusic();
 
-	if (!object->getExitState()){
-		//Init music
-		object->updateMusic();
+			init();
 
-		init();
+			Thread renderThread(&render);
+			renderThread.launch();
 
-		Thread renderThread(&render);
-		renderThread.launch();
+			while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::Escape)){
+				sleep(milliseconds(1));
+			}
 
-		while (!Keyboard::isKeyPressed(Keyboard::Space)){
-			sleep(milliseconds(1));
+			update();
+
+			renderThread.wait();
 		}
 
-		update();
-
-		renderThread.wait();
+		deInit();
 	}
 
-	deInit();
 	return 0;
-}
-
-
-bool mainMenu()
-{
-	menuWindow = new RenderWindow;
-
-	menuWindow->create(VideoMode(VideoMode::getDesktopMode().width / 2, VideoMode::getDesktopMode().height / 2, 32), "Space Dash", Style::None);
-	menuWindow->setPosition(Vector2i(VideoMode::getDesktopMode().width / 4, VideoMode::getDesktopMode().width / 8));
-
-	RectangleShape background;
-	background.setSize(Vector2f(menuWindow->getSize().x, menuWindow->getSize().y));
-	background.setFillColor(Color::White);
-	background.setPosition(menuWindow->getPosition().x, menuWindow->getPosition().y);
-
-	menuWindow->display();
-
-	bool start = false, exit = false;
-
-	while (!start && !exit){
-		
-		menuWindow->draw(background);
-
-		if (Keyboard::isKeyPressed(Keyboard::Space)){
-			start = true;
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)){
-			exit = true;
-		}
-
-		sleep(milliseconds(1));
-
-		menuWindow->clear();
-	}
-
-	menuWindow->close();
-
-	delete menuWindow;
-
-	if (start) return true;
-	else return false;
 }
 
 
@@ -140,7 +94,7 @@ bool init()
 	object->initBonusObjects();
 
 	//Init obstacles
-	object->initObstacleObjects();
+	object->initObstacles();
 
 	return 1;
 }
@@ -155,7 +109,7 @@ bool deInit(){
 
 void update()
 {	
-	while (!object->getExitState() && !object->getExitState()){
+	while (!object->getExitState()){
 		object->updatePlayer();
 		object->updateBonusObjects();
 		object->updateObstacles();
@@ -170,12 +124,13 @@ void update()
 			sleep(milliseconds(500));
 			init();
 
-			while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::Space)){
+			do{
 				sleep(milliseconds(1));
-			}
-			
-			if (Keyboard::isKeyPressed(Keyboard::Space)) object->setCrashState(false);
-			else if(Keyboard::isKeyPressed(Keyboard::Escape)) object->setExitState(true);
+
+				if (Keyboard::isKeyPressed(Keyboard::Space)){
+					object->setCrashState(false);
+				}
+			}while (!object->getExitState() && object->getCrashState());
 		}
 	}
 }
@@ -220,6 +175,7 @@ void render()
 		if ((Keyboard::isKeyPressed(Keyboard::Escape))) object->setExitState(true);
 	}
 
+	gameWindow->close();
 	delete gameWindow;
 }
 

@@ -16,15 +16,7 @@ Space Dash - A student project created with SFML
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
-
-#include <Windows.h>
-
 #include "Player.h"
-#include "OtherObjects.h"
-
-
-#include <SFML/Graphics.hpp>
-using namespace sf;
 
 
 Player::Player(void)
@@ -45,11 +37,11 @@ Player::Player(void)
 
 	if (!playerTexture.loadFromFile("Resources/Graphics/rocket.png")){
 		setExitState(true);
-		MessageBox(NULL, L"Failed to load player texture!", L"Error", MB_OK );
+		MessageBox(NULL, L"Failed to load player texture!", L"Error", MB_OK);
 	}
 	if (!flameTexture.loadFromFile("Resources/Graphics/flame_1.png")){
 		setExitState(true);
-		MessageBox(NULL, L"Failed to load player flame texture!", L"Error", MB_OK );
+		MessageBox(NULL, L"Failed to load player flame texture!", L"Error", MB_OK);
 	}
 }
 Player::~Player(void){}

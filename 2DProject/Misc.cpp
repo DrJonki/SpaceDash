@@ -16,12 +16,7 @@ Space Dash - A student project created with SFML
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
-
-#include <cstdlib>
-
 #include "Misc.h"
-
-#include <SFML/Graphics.hpp>
 
 
 Misc::Misc(void)
@@ -46,26 +41,8 @@ float Misc::getRandom(float randMin, float randMax)
 }
 
 
-
-bool Misc::objectCollision(sf::RectangleShape *object1, sf::RectangleShape *object2)
-{
-	if (object1->getPosition().x + object1->getSize().x > object2->getPosition().x &&
-		object1->getPosition().x < object2->getPosition().x + object2->getSize().x &&
-		object1->getPosition().y + object1->getSize().y > object2->getPosition().y &&
-		object1->getPosition().y < object2->getPosition().y + object2->getSize().y) return true;
-
-	return false;
-}
-
 bool Misc::playerCollision(sf::Sprite *object1, sf::Sprite *object2)
 {
-	/*if (object1->getPosition().x + object1->getOrigin().x > object2->getPosition().x - object2->getOrigin().x										&& 
-		object1->getPosition().x - object1->getOrigin().x < object2->getPosition().x + (object2->getLocalBounds().width * object2->getScale().x)	&&
-		object1->getPosition().y + object1->getOrigin().y > object2->getPosition().y - object2->getOrigin().y										&&
-		object1->getPosition().y - object1->getOrigin().y < object2->getPosition().y + (object2->getLocalBounds().height * object2->getScale().y)) return true;
-
-	return false;*/
-
 	if (object1->getPosition().x - (object1->getGlobalBounds().width / 2) > (object2->getPosition().x - object2->getGlobalBounds().width)	&&
 		object1->getPosition().x + (object1->getGlobalBounds().width / 2) < (object2->getPosition().x + object2->getGlobalBounds().width)  	&&
 		object1->getPosition().y - (object1->getGlobalBounds().height / 2) > (object2->getPosition().y - object2->getGlobalBounds().height)	&&
@@ -83,7 +60,6 @@ bool Misc::spriteCollision(sf::Sprite *object1, sf::Sprite *object2)
 
 	return false;
 }
-
 
 
 void Misc::setCrashState(bool state)

@@ -20,6 +20,8 @@ Space Dash - A student project created with SFML
 #ifndef SOUNDCLASS
 #define SOUNDCLASS
 
+#include <ctime>
+
 #include <SFML/Audio.hpp>
 
 //namespace sd
@@ -33,8 +35,12 @@ Space Dash - A student project created with SFML
 		void updateMusic();
 		void stopMusic();
 
+		void updateMenuMusic();
+		void stopMenuMusic();
+
 	private:
 		sf::Music music;
+		sf::Music menuMusic;
 	};
 //}
 

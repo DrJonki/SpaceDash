@@ -16,17 +16,18 @@ Space Dash - A student project created with SFML
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
-
 #ifndef OTHER_OBJECTS
 #define OTHER_OBJECTS
 
-#include "TextClass.h"
-#include "SoundClass.h"
+#include "Obstacle.h"
+
+#include <Windows.h>
 #include <SFML/Graphics.hpp>
+using namespace sf;
 
 //namespace sd
 //{
-	class OtherObjects : public TextClass, public SoundClass
+	class OtherObjects : public Obstacle
 	{
 	public:
 
@@ -43,13 +44,6 @@ Space Dash - A student project created with SFML
 		void updateBorders();
 		void drawBorders(sf::RenderWindow* window);
 
-		//Obstacles
-		void initObstacleObjects();
-		void updateObstacles();
-		void drawObstacles(sf::RenderWindow* window);
-		int getNumberOfObstacles();
-		sf::Sprite getObstacleObject(int count);
-
 		//Bonus objects
 		void initBonusObjects();
 		void updateBonusObjects();
@@ -65,20 +59,11 @@ Space Dash - A student project created with SFML
 		sf::Texture debrisTextureTop;
 		sf::Texture debrisTextureBottom;
 		sf::Texture starTexture;
-		sf::Texture obstacleTexture;
 
 		sf::Sprite backgroundSprite[2];
 		sf::Sprite debrisSprite[4];
 
 		sf::Sprite starSprite;
-
-		static const int numberOfObstacles = 20;
-		sf::Sprite obstacle[numberOfObstacles];
-		float obstacleScaleMin;
-		float obstacleScaleMax;
-
-	protected:
-		double obstacleBaseSpeed;
 	};
 //}
 

@@ -21,7 +21,13 @@ Space Dash - A student project created with SFML
 #define TEXTCLASS
 
 #include "Misc.h"
+
+#include <sstream>
+#include <fstream>
+#include <Windows.h>
+
 #include <SFML/Graphics.hpp>
+using namespace sf;
 
 //namespace sd
 //{

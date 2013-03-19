@@ -20,7 +20,10 @@ Space Dash - A student project created with SFML
 #ifndef MISC
 #define MISC
 
+#include <cstdlib>
+
 #include <SFML/Graphics.hpp>
+using namespace sf;
 
 //namespace sd
 //{
@@ -40,9 +43,8 @@ Space Dash - A student project created with SFML
 
 		float getRandom(float randMin, float randMax);
 
-		bool objectCollision(sf::RectangleShape *object1, sf::RectangleShape *object2);
-		bool playerCollision(sf::Sprite *object1, sf::Sprite *object2);
-		bool spriteCollision(sf::Sprite *object1, sf::Sprite *object2);
+		bool playerCollision(Sprite *object1, Sprite *object2);
+		bool spriteCollision(Sprite *object1, Sprite *object2);
 
 	private:
 		bool crashState;

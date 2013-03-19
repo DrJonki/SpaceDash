@@ -81,21 +81,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuClass.cpp" />
     <ClCompile Include="Misc.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="OtherObjects.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SoundClass.cpp" />
     <ClCompile Include="TextClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MenuClass.h" />
     <ClInclude Include="Misc.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="OtherObjects.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SoundClass.h" />
     <ClInclude Include="TextClass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Debug\Resources\background.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

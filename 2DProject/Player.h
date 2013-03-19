@@ -21,7 +21,10 @@ Space Dash - A student project created with SFML
 #define PLAYER
 
 #include "OtherObjects.h"
+
+#include <Windows.h>
 #include <SFML/Graphics.hpp>
+using namespace sf;
 
 //namespace sd
 //{
@@ -34,10 +37,10 @@ Space Dash - A student project created with SFML
 		//Player
 		void initPlayer();
 		void updatePlayer();
-		void drawPlayer(sf::RenderWindow & window);
+		void drawPlayer(sf::RenderWindow* window);
 
 		//Flames
-		void drawFlames(sf::RenderWindow & window); 
+		void drawFlames(sf::RenderWindow* window); 
 
 	private:
 		sf::Texture playerTexture;
