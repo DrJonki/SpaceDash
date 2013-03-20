@@ -31,7 +31,7 @@ MenuClass::~MenuClass(void)
 bool MenuClass::showMenu()
 {
 	menuWindow->create(VideoMode(800, 400, 32), "Space Dash", Style::None);
-	menuWindow->setPosition(Vector2i(VideoMode::getDesktopMode().width / 3.5, VideoMode::getDesktopMode().width / 5));
+	menuWindow->setPosition(Vector2i(VideoMode::getDesktopMode().width / 3.5, VideoMode::getDesktopMode().width / 5.5));
 	menuMusic.updateMenuMusic();
 
 	bool start = false, exit = false;

@@ -27,6 +27,7 @@ Space Dash - A student project created with SFML
 #include <Windows.h>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 using namespace sf;
 
 //namespace sd

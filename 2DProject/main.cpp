@@ -118,7 +118,7 @@ void update()
 		object->updateText();
 		object->updateMusic();
 
-		sleep(microseconds(15000));
+		sleep(microseconds(14000));
 
 		if (object->getCrashState()){
 			sleep(milliseconds(500));

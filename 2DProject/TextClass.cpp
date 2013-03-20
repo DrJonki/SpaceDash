@@ -83,6 +83,8 @@ void TextClass::updateText()
 	ss.str("");
 	ss << "Best score: " << bestScore / 10;
 	bestScoreText.setString(ss.str());
+
+	glFlush();
 }
 
 void TextClass::drawText(RenderWindow* window)
