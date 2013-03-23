@@ -47,13 +47,19 @@ using namespace sf;
 		//void readScoreFromFile();
 		//void writeScoreToFile();
 
+		int getPlayerHealth();
+		void decreaseHealth(const unsigned short amount);
+		void increaseHealth(const unsigned short amount);
+
 	private:
 		sf::Font defaultFont;
 		sf::Text scoreText;
 		sf::Text lastScoreText;
 		sf::Text bestScoreText;
+		Text initText;
+		Text healthText;
 
-		sf::Text initText;
+		int playerHealth;
 
 		unsigned long score;
 		unsigned long lastScore;

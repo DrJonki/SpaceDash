@@ -21,11 +21,6 @@ Space Dash - A student project created with SFML
 
 OtherObjects::OtherObjects(void)
 {
-	if (!backgroundTexture.loadFromFile("Resources/Graphics/background_2.png")){
-		setExitState(true);
-		MessageBox(NULL, L"Failed to load background texture!", L"Error", MB_OK );
-	}
-
 	if (!debrisTextureTop.loadFromFile("Resources/Graphics/debrisfield_top.png")){
 		setExitState(true);
 		MessageBox(NULL, L"Failed to load the top debris texture!", L"Error", MB_OK );
@@ -46,27 +41,21 @@ OtherObjects::~OtherObjects(void){}
 
 void OtherObjects::initBackground()
 {
-	backgroundSprite[0].setTexture(backgroundTexture);
-	backgroundSprite[0].setPosition(0, 0);
+	for (int i = 0; i < numberOfStars; i++){
+		float ramNum = getRandom(1, 3);
+		backgroundStar[i].setSize(Vector2f(ramNum, ramNum));
+		backgroundStar[i].setPosition(getRandom(-1, VideoMode::getDesktopMode().width + 1), getRandom(0, VideoMode::getDesktopMode().height));
 
-	backgroundSprite[1].setTexture(backgroundTexture);
-	backgroundSprite[1].setPosition(backgroundSprite[0].getGlobalBounds().width, 0);
+		starSpeed[i] = -(getRandom(1, 4));
+	}
 }
 
 void OtherObjects::updateBackground()
 {
-	for (int i=0; i<2; i++){
-		backgroundSprite[i].move(-1, 0);
-		
-		if (backgroundSprite[i].getPosition().x <= -(backgroundSprite[i].getGlobalBounds().width)){
-			if (i == 0){
-				backgroundSprite[0].setPosition(backgroundSprite[1].getGlobalBounds().width, 0);
-			}
+	for (int i = 0; i < numberOfStars; i++){
+		backgroundStar[i].move(starSpeed[i], 0);
 
-			else if (i == 1){
-				backgroundSprite[1].setPosition(backgroundSprite[0].getGlobalBounds().width, 0);
-			}
-		}
+		if (backgroundStar[i].getPosition().x < -2) backgroundStar[i].setPosition(VideoMode::getDesktopMode().width + 1, getRandom(0, VideoMode::getDesktopMode().height));
 	}
 }
 
@@ -139,8 +128,8 @@ void OtherObjects::resetStar()
 
 void OtherObjects::drawBackground(RenderWindow* window) 
 {
-	for (int i=0; i<2; i++){
-		window->draw(backgroundSprite[i]);
+	for (int i=0; i<numberOfStars; i++){
+		window->draw(backgroundStar[i]);
 	}
 }
 

@@ -55,12 +55,14 @@ using namespace sf;
 
 	private:
 		//Resoures
-		sf::Texture backgroundTexture;
+		static const int numberOfStars = 250;
+		RectangleShape backgroundStar[numberOfStars];
+		int starSpeed[numberOfStars];
+
 		sf::Texture debrisTextureTop;
 		sf::Texture debrisTextureBottom;
 		sf::Texture starTexture;
 
-		sf::Sprite backgroundSprite[2];
 		sf::Sprite debrisSprite[4];
 
 		sf::Sprite starSprite;

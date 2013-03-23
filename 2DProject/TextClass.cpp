@@ -25,7 +25,9 @@ TextClass::TextClass(void)
 	lastScore = 0;
 	bestScore = 0;
 
-	if (!defaultFont.loadFromFile("Resources/Misc/font.ttf")){
+	playerHealth = 100;
+
+	if (!defaultFont.loadFromFile("Resources/Misc/font.otf")){
 		MessageBox(NULL, L"Failed to load font!", L"Error", MB_OK );
 	}
 }
@@ -35,12 +37,18 @@ void TextClass::initScoreText()
 {
 	lastScore = score;
 	score = 0;
-	
+	playerHealth = 100;
+
 	initText.setFont(defaultFont);
 	initText.setString("1234567890abcdefghijklmnstuvwxyz");
 	initText.setCharacterSize(26);
 	initText.setColor(Color::Cyan);
 	initText.setPosition(10, 10);
+
+	healthText.setFont(defaultFont);
+	healthText.setCharacterSize(26);
+	healthText.setColor(Color::Color(255, 153, 0));
+	healthText.setPosition(400, 50);
 
 	//Score
 	scoreText.setFont(defaultFont);
@@ -64,6 +72,11 @@ void TextClass::initScoreText()
 void TextClass::updateText()
 {
 	std::stringstream ss;
+
+	//Health
+	ss.str("");
+	ss << "Health: " << playerHealth;
+	healthText.setString(ss.str());
 
 	//Score
 	score++;
@@ -92,6 +105,7 @@ void TextClass::drawText(RenderWindow* window)
 	window->draw(scoreText);
 	window->draw(lastScoreText);
 	window->draw(bestScoreText);
+	window->draw(healthText);
 }
 
 void TextClass::addToScore(int scoreAdd)
@@ -127,3 +141,21 @@ void TextClass::addToScore(int scoreAdd)
 //		Stream.close();
 //	}
 //}
+
+int TextClass::getPlayerHealth()
+{
+	return playerHealth;
+}
+
+void TextClass::decreaseHealth(const unsigned short amount)
+{
+	playerHealth -= amount;
+}
+void TextClass::increaseHealth(const unsigned short amount)
+{
+	playerHealth += amount;
+
+	if (playerHealth > 100){
+		playerHealth = playerHealth - (playerHealth - 100);
+	}
+}

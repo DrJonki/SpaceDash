@@ -20,11 +20,13 @@ Space Dash - A student project created with SFML
 #define MENUCLASS
 
 #include "SoundClass.h"
+#include "Misc.h"
 
+#include <Windows.h>
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
-class MenuClass
+class MenuClass : private Misc
 {
 public:
 	MenuClass(void);
@@ -36,8 +38,43 @@ private:
 	RenderWindow* menuWindow;
 	SoundClass menuMusic;
 
+	Texture shadeTexture;
+	Sprite shadeSprite;
+
+	Texture logoTexture;
+	Sprite logoSprite;
+
+	Font defaultFont;
+	Text playButtonText;
+	Text exitButtonText;
+	Text settingsButtonText;
+	Text creditsButtonText;
+
+	Texture rocketTexture;
+	Texture flameTexture;
+	Sprite rocketSprite;
+	Sprite flameSpriteTop;
+	Sprite flameSpriteBottom;
+	float distanceLeftRocket;
+	float rocketDestination;
+
+	static const int numberOfStars = 50;
+	RectangleShape starShape[numberOfStars];
+	float starSpeed[50];
+
+	void initGraphics();
+	void updateGraphics();
+	void drawGraphics();
+
 	void closeMenu();
 	bool mouseIsOnMenu();
+	bool mouseIsOnButton(Text *text);
+
+	//Animation
+	int flameAnim;
+	float flameScale;
+	int animSteps;
+	bool animAscend;
 };
 
 #endif

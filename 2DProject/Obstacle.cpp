@@ -22,8 +22,8 @@ Space Dash - A student project created with SFML
 Obstacle::Obstacle(void)
 {
 	obstacleBaseSpeed = 8;
-	obstacleScaleMin = 0.3;
-	obstacleScaleMax = 0.4;
+	obstacleRadiusMin = 25;
+	obstacleRadiusMax = 50;
 
 	if (!obstacleTexture.loadFromFile("Resources/Graphics/debris_0.png")){
 		setExitState(true);
@@ -40,13 +40,13 @@ void Obstacle::initObstacles()
 {
 	//Init obstacle objects
 	for (int i=0; i<numberOfObstacles; i++){
-		obstacle[i].setTexture(obstacleTexture);
 
-		float ramNum = getRandom(obstacleScaleMin, obstacleScaleMax);
-		obstacle[i].setScale(ramNum, ramNum);
+		float ramNum = getRandom(obstacleRadiusMin, obstacleRadiusMax);
+		obstacle[i].setRadius(ramNum);
+		obstacle[i].setOrigin(ramNum, ramNum);
 		obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 2500)), getRandom(100, 1100));
-		obstacle[i].setOrigin(obstacle[i].getGlobalBounds().width / 2, obstacle[i].getGlobalBounds().height / 2);
 		obstacle[i].setRotation(0);
+		obstacle[i].setTexture(&obstacleTexture);
 	}
 }
 
@@ -60,11 +60,10 @@ void Obstacle::updateObstacles()
 		else obstacle[i].rotate(-1);
 		
 		if (obstacle[i].getPosition().x < -100){
-			float ramNum = getRandom(obstacleScaleMin, obstacleScaleMax);
-			obstacle[i].setScale(ramNum, ramNum);
+			float ramNum = getRandom(obstacleRadiusMin, obstacleRadiusMax);
+			obstacle[i].setRadius(ramNum);
 			obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 2500)), getRandom(100, 1000));
 			obstacle[i].setRotation(0);
-			obstacle[i].setOrigin(obstacle[i].getGlobalBounds().width / 2, obstacle[i].getGlobalBounds().height / 2);
 		}
 	}
 }
@@ -87,9 +86,9 @@ int Obstacle::getNumberOfObstacles()
 {
 	return numberOfObstacles;
 }
-Sprite Obstacle::getObstacleObject(int count)
+CircleShape Obstacle::getObstacleObject(int count)
 {
-	Sprite &obstacleRef = obstacle[count];
+	CircleShape &obstacleRef = obstacle[count];
 
 	return obstacleRef;
 }

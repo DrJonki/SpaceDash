@@ -46,15 +46,14 @@ using namespace sf;
 		sf::Texture playerTexture;
 		sf::Sprite playerSprite;
 
+		CircleShape collisionCircle[3];
+
 		sf::Texture flameTexture;
 		sf::Sprite flameSpriteTop;
 		sf::Sprite flameSpriteBottom;
 	
 		double playerRotation;
 		double playerSpeed;
-
-		int topFlameCounter;
-		int bottomFlameCounter;
 
 		double baseClimingSpeed;
 		double baseFallingSpeed;
@@ -63,6 +62,8 @@ using namespace sf;
 		float flameScale;
 		int animSteps;
 		bool animAscend;
+
+		bool drawCollisionShapes;
 	};
 //}
 

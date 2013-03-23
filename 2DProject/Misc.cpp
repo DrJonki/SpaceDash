@@ -41,14 +41,13 @@ float Misc::getRandom(float randMin, float randMax)
 }
 
 
-bool Misc::playerCollision(sf::Sprite *object1, sf::Sprite *object2)
+bool Misc::playerCollision(sf::CircleShape *circle1, sf::CircleShape *circle2)
 {
-	if (object1->getPosition().x - (object1->getGlobalBounds().width / 2) > (object2->getPosition().x - object2->getGlobalBounds().width)	&&
-		object1->getPosition().x + (object1->getGlobalBounds().width / 2) < (object2->getPosition().x + object2->getGlobalBounds().width)  	&&
-		object1->getPosition().y - (object1->getGlobalBounds().height / 2) > (object2->getPosition().y - object2->getGlobalBounds().height)	&&
-		object1->getPosition().y + (object1->getGlobalBounds().height / 2) < (object2->getPosition().y + object2->getGlobalBounds().height)) return true;
+	float hypotenuse = sqrt(pow(fabs(circle2->getPosition().x - circle1->getPosition().x), 2) + (pow(fabs(circle2->getPosition().y - circle1->getPosition().y), 2)));
 
-	return false;
+	if (hypotenuse < circle1->getRadius() + circle2->getRadius()) return true;
+
+	else return false;
 }
 
 bool Misc::spriteCollision(sf::Sprite *object1, sf::Sprite *object2)

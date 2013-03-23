@@ -38,15 +38,15 @@ public:
 
 	int getNumberOfObstacles();
 	double getObstacleBaseSpeed();
-	sf::Sprite getObstacleObject(int count);
+	CircleShape getObstacleObject(int count);
 
 private:
 	sf::Texture obstacleTexture;
 	
-	static const int numberOfObstacles = 20;
-	sf::Sprite obstacle[numberOfObstacles];
-	float obstacleScaleMin;
-	float obstacleScaleMax;
+	static const int numberOfObstacles = 35;
+	CircleShape obstacle[numberOfObstacles];
+	float obstacleRadiusMin;
+	float obstacleRadiusMax;
 
 	double obstacleBaseSpeed;
 };

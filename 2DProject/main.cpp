@@ -46,6 +46,12 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		object = new Player;
 		object->setRandomSeed(time(NULL));
 
+		gameWindow = new RenderWindow;
+
+		gameWindow->create(VideoMode(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height, 32), "Space Dash", Style::Fullscreen);
+		gameWindow->setVerticalSyncEnabled(1);
+		gameWindow->setMouseCursorVisible(0);
+
 		sleep(milliseconds(200));
 
 		if (!object->getExitState()){
@@ -53,19 +59,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			object->updateMusic();
 
 			init();
-
-			Thread renderThread(&render);
-			renderThread.launch();
+			render();
 
 			while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::Escape)){
 				sleep(milliseconds(1));
+				object->updateMusic();
 			}
 
 			update();
-
-			renderThread.wait();
 		}
-
+		
+		gameWindow->close();
 		deInit();
 	}
 
@@ -101,6 +105,7 @@ bool init()
 
 bool deInit(){
 	object->stopMusic();
+	delete gameWindow;
 	delete object;
 
 	return 1;
@@ -108,8 +113,12 @@ bool deInit(){
 
 
 void update()
-{	
+{
+	Clock clock;
+	Time time;
+
 	while (!object->getExitState()){
+		clock.restart();
 		object->updatePlayer();
 		object->updateBonusObjects();
 		object->updateObstacles();
@@ -118,7 +127,10 @@ void update()
 		object->updateText();
 		object->updateMusic();
 
-		sleep(microseconds(14000));
+		render();
+
+		time = clock.getElapsedTime();
+		sleep(milliseconds(14 - time.asMilliseconds()));
 
 		if (object->getCrashState()){
 			sleep(milliseconds(500));
@@ -130,6 +142,8 @@ void update()
 				if (Keyboard::isKeyPressed(Keyboard::Space)){
 					object->setCrashState(false);
 				}
+				object->updateMusic();
+				render();
 			}while (!object->getExitState() && object->getCrashState());
 		}
 	}
@@ -138,45 +152,34 @@ void update()
 
 void render()
 {
-	gameWindow = new RenderWindow;
+	gameWindow->clear();
+	gameWindow->pushGLStates();
 
-	gameWindow->create(VideoMode(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height, 32), "Space Dash", Style::Fullscreen);
-	gameWindow->setVerticalSyncEnabled(1);
+	//Draw objects
+	//Background
+	object->drawBackground(gameWindow);
 
-	while ((!object->getExitState())){
-		
-		gameWindow->clear();
-		gameWindow->pushGLStates();
+	//Player
+	object->drawPlayer(gameWindow);
+	//Flames
+	if (!object->getCrashState()) object->drawFlames(gameWindow);
 
-		//Draw objects
-		//Background
-		object->drawBackground(gameWindow);
+	//Bonus objects
+	object->drawBonusObjects(gameWindow);
 
-		//Player
-		object->drawPlayer(gameWindow);
-		//Flames
-		if (!object->getCrashState()) object->drawFlames(gameWindow);
+	//Borders
+	object->drawBorders(gameWindow);
 
-		//Bonus objects
-		object->drawBonusObjects(gameWindow);
+	//Obstacles
+	object->drawObstacles(gameWindow);
 
-		//Borders
-		object->drawBorders(gameWindow);
-
-		//Obstacles
-		object->drawObstacles(gameWindow);
-
-		//Text
-		object->drawText(gameWindow);
+	//Text
+	object->drawText(gameWindow);
 			
-		gameWindow->popGLStates();
-		gameWindow->display();
+	gameWindow->popGLStates();
+	gameWindow->display();
 
-		if ((Keyboard::isKeyPressed(Keyboard::Escape))) object->setExitState(true);
-	}
-
-	gameWindow->close();
-	delete gameWindow;
+	if ((Keyboard::isKeyPressed(Keyboard::Escape))) object->setExitState(true);
 }
 
 

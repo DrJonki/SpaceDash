@@ -26,11 +26,10 @@ Player::Player(void)
 	animSteps = 10;
 	animAscend = true;
 
+	drawCollisionShapes = false;
+
 	playerRotation = 0;
 	playerSpeed = 0;
-
-	topFlameCounter = 0;
-	bottomFlameCounter = 0;
 	
 	baseClimingSpeed = -7;
 	baseFallingSpeed = 10.5;
@@ -49,21 +48,36 @@ Player::~Player(void){}
 
 void Player::initPlayer()
 {
+	playerRotation = 0;
 	playerSprite.setTexture(playerTexture);
 	playerSprite.setPosition(150, VideoMode::getDesktopMode().height/4);
-	playerSprite.setOrigin(playerSprite.getGlobalBounds().width / 2, playerSprite.getGlobalBounds().height / 2);
-	playerSprite.setRotation(0);
+	playerSprite.setOrigin(playerSprite.getLocalBounds().width / 2, playerSprite.getLocalBounds().height / 2);
+	playerSprite.setRotation(playerRotation);
 
 	//Flames
 	flameSpriteTop.setTexture(flameTexture);
 	flameSpriteTop.setScale(0.5f, 0.5f);
-	flameSpriteTop.setOrigin(flameSpriteTop.getGlobalBounds().width, flameSpriteTop.getGlobalBounds().height);
-	flameSpriteTop.setPosition(-100, -100);
+	flameSpriteTop.setOrigin(flameSpriteTop.getLocalBounds().width, flameSpriteTop.getLocalBounds().height);
+	flameSpriteTop.setPosition(-100, -100);	
 
 	flameSpriteBottom.setTexture(flameTexture);
 	flameSpriteBottom.setScale(0.5f, 0.5f);
-	flameSpriteBottom.setOrigin(flameSpriteBottom.getGlobalBounds().width, flameSpriteBottom.getGlobalBounds().height);
+	flameSpriteBottom.setOrigin(flameSpriteBottom.getLocalBounds().width, flameSpriteBottom.getLocalBounds().height);
 	flameSpriteBottom.setPosition(-100, -100);
+
+	collisionCircle[0].setRadius(10);
+	collisionCircle[0].setFillColor(Color::Green);
+	collisionCircle[0].setOrigin(collisionCircle[0].getLocalBounds().width / 2, collisionCircle[0].getLocalBounds().height / 2);
+	collisionCircle[1].setRadius(5);
+	collisionCircle[1].setFillColor(Color::Green);
+	collisionCircle[1].setOrigin(collisionCircle[1].getLocalBounds().width / 2, collisionCircle[1].getLocalBounds().height / 2);
+	collisionCircle[2].setRadius(5);
+	collisionCircle[2].setFillColor(Color::Green);
+	collisionCircle[2].setOrigin(collisionCircle[2].getLocalBounds().width / 2, collisionCircle[2].getLocalBounds().height / 2);
+	collisionCircle[0].setPosition(playerSprite.getPosition().x + 20, playerSprite.getPosition().y + ((playerRotation / 3) + 2));
+	collisionCircle[1].setPosition(playerSprite.getPosition().x - 28, playerSprite.getPosition().y - (playerRotation + 14));
+	collisionCircle[2].setPosition(playerSprite.getPosition().x - 28, playerSprite.getPosition().y - (playerRotation - 14));
+
 }
 
 void Player::updatePlayer()
@@ -84,8 +98,17 @@ void Player::updatePlayer()
 	
 	//Obstacles
 	for (int i=0; i<getNumberOfObstacles(); i++){
-		if (playerCollision(&playerSprite, &getObstacleObject(i))){
-			setCrashState(true);
+		if (playerCollision(&collisionCircle[0], &getObstacleObject(i))){
+			decreaseHealth(1);
+			if (getPlayerHealth() <= 0) setCrashState(true);
+		}
+		if (playerCollision(&collisionCircle[1], &getObstacleObject(i))){
+			decreaseHealth(1);
+			if (getPlayerHealth() <= 0) setCrashState(true);
+		}
+		if (playerCollision(&collisionCircle[2], &getObstacleObject(i))){
+			decreaseHealth(1);
+			if (getPlayerHealth() <= 0) setCrashState(true);
 		}
 	}
 
@@ -96,11 +119,9 @@ void Player::updatePlayer()
 	}
 
 
-
-
 	if (Keyboard::isKeyPressed(Keyboard::Space)){
-		if (playerRotation > -30){
-			playerRotation -= 10;
+		if (playerRotation >= -30){
+			playerRotation -= 15;
 			playerSprite.setRotation(playerRotation);
 		}
 
@@ -110,7 +131,7 @@ void Player::updatePlayer()
 	}
 
 	else {
-		if (playerRotation < 20){
+		if (playerRotation <= 20){
 			playerRotation += 5;
 			playerSprite.setRotation(playerRotation);
 		}
@@ -152,11 +173,21 @@ void Player::updatePlayer()
 		flameSpriteTop.setScale(flameScale, flameSpriteBottom.getScale().y);
 		flameAnim--;
 	}
+
+	collisionCircle[0].setPosition(playerSprite.getPosition().x + 20, playerSprite.getPosition().y + ((playerRotation / 3) + 2));
+	collisionCircle[1].setPosition(playerSprite.getPosition().x - (24 - (playerRotation / 5)), playerSprite.getPosition().y - ((playerRotation / 2) + 12));
+	collisionCircle[2].setPosition(playerSprite.getPosition().x - (24 + (playerRotation / 5)), playerSprite.getPosition().y - ((playerRotation / 2) - 14));
 }
 
 void Player::drawPlayer(RenderWindow* window)
 {
 	window->draw(playerSprite);
+
+	if (drawCollisionShapes){
+		window->draw(collisionCircle[0]);
+		window->draw(collisionCircle[1]);
+		window->draw(collisionCircle[2]);
+	}
 }
 
 void Player::drawFlames(RenderWindow* window)

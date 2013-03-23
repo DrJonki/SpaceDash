@@ -31,7 +31,7 @@ SoundClass::~SoundClass(void){}
 
 void SoundClass::updateMusic()
 {
-	if (music.getVolume() < 75) music.setVolume(music.getVolume() + 0.1);
+	if (music.getVolume() < 75) music.setVolume(music.getVolume() + 1);
 
 	if (music.getStatus() == sf::Music::Stopped){
 		int number = 1 + (int)rand()/((int)RAND_MAX/(7-(1)));
@@ -71,7 +71,7 @@ void SoundClass::updateMusic()
 
 void SoundClass::updateMenuMusic()
 {
-	if (menuMusic.getVolume() < 75) menuMusic.setVolume(menuMusic.getVolume() + 0.05);
+	if (menuMusic.getVolume() < 75) menuMusic.setVolume(menuMusic.getVolume() + 0.2);
 
 	if (menuMusic.getStatus() == sf::Music::Stopped){
 		menuMusic.openFromFile("Resources/Audio/menumusic.wav");

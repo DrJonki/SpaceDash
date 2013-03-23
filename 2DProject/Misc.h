@@ -21,6 +21,7 @@ Space Dash - A student project created with SFML
 #define MISC
 
 #include <cstdlib>
+#include <cmath>
 
 #include <SFML/Graphics.hpp>
 using namespace sf;
@@ -43,7 +44,7 @@ using namespace sf;
 
 		float getRandom(float randMin, float randMax);
 
-		bool playerCollision(Sprite *object1, Sprite *object2);
+		bool playerCollision(CircleShape *object1, CircleShape *object2);
 		bool spriteCollision(Sprite *object1, Sprite *object2);
 
 	private:
