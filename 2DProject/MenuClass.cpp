@@ -21,7 +21,7 @@ Space Dash - A student project created with SFML
 
 MenuClass::MenuClass(void)
 {
-	menuWindow = new RenderWindow;
+	firstInit = true;
 
 	flameAnim = 0;
 	flameScale = 0.5;
@@ -44,36 +44,47 @@ MenuClass::MenuClass(void)
 		MessageBox(NULL, L"Failed to load font!", L"Error", MB_OK );
 	}
 }
-MenuClass::~MenuClass(void)
-{
-	delete menuWindow;
-}
+MenuClass::~MenuClass(void){}
 
 bool MenuClass::showMenu()
 {
-	menuWindow->create(VideoMode(800, 400, 32), "Space Dash", Style::None);
-	menuWindow->setPosition(Vector2i(VideoMode::getDesktopMode().width / 3.5, VideoMode::getDesktopMode().width / 5.5));
-	menuWindow->setFramerateLimit(60);
-	menuMusic.updateMenuMusic();
-	initGraphics();
+	RenderWindow menuWindow;
+	menuWindow.create(VideoMode(800, 400, 32), "Space Dash", Style::None);
+	menuWindow.setPosition(Vector2i((VideoMode::getDesktopMode().width / 2) - (menuWindow.getSize().x / 2), (VideoMode::getDesktopMode().height / 2) - (menuWindow.getSize().y / 2)));
+	menuWindow.setFramerateLimit(60);
+	updateMenuMusic();
+	initGraphics(menuWindow);
 
 	bool start = false, exit = false;
 
 	while (!start && !exit){
-		menuMusic.updateMenuMusic();
-		updateGraphics();
-		drawGraphics();
+		updateMenuMusic();
+		updateGraphics(menuWindow);
+		drawGraphics(menuWindow);
+		
 
-		if (Keyboard::isKeyPressed(Keyboard::Space) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(&playButtonText))){
-			start = true;
+		if (!creditsRolling && !settingsMenu){
+			if (Keyboard::isKeyPressed(Keyboard::Space) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(menuWindow, &playButtonText))){
+				start = true;
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Escape) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(menuWindow, &exitButtonText))){
+				exit = true;
+			}
+			/*if (Keyboard::isKeyPressed(Keyboard::C) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(menuWindow, &creditsButtonText))){
+				creditsRolling = true;
+			}*/
+			/*if (Keyboard::isKeyPressed(Keyboard::S) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(menuWindow, &settingsButtonText))){
+				settingsMenu = true;
+			}*/
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(&exitButtonText))){
-			exit = true;
-		}
+
+		Event e;
+		while (menuWindow.pollEvent(e));
 
 		sleep(milliseconds(1));
 	}
-
+	
+	menuWindow.close();
 	closeMenu();
 
 	if (start) return true;
@@ -84,51 +95,55 @@ bool MenuClass::showMenu()
 
 void MenuClass::closeMenu()
 {
-	menuMusic.stopMenuMusic();
-	menuWindow->close();
+	stopMenuMusic();
 }
 
-void MenuClass::initGraphics()
+void MenuClass::initGraphics(RenderWindow &menuWindow)
 {
-	distanceLeftRocket = 225;
 	rocketDestination = 125;
+	creditsRolling = false;
+	settingsMenu = false;
 
-	for (int i = 0; i < numberOfStars; i++){
-		starSpeed[i] = -(getRandom(1, 7));
+	if (firstInit){
+		for (int i = 0; i < numberOfStars; i++){
+			starSpeed[i] = -(getRandom(1, 7));
+		}
+
+		playButtonText.setPosition(540, 50);
+		playButtonText.setFont(defaultFont);
+		playButtonText.setColor(Color::Color(0, 122, 243));
+		playButtonText.setCharacterSize(55);
+		playButtonText.setString("PLAY");
+
+		exitButtonText.setPosition(540, 230);
+		exitButtonText.setFont(defaultFont);
+		exitButtonText.setColor(Color::Color(0, 122, 243));
+		exitButtonText.setCharacterSize(35);
+		exitButtonText.setString("EXIT");
+
+		settingsButtonText.setPosition(540, 150);
+		settingsButtonText.setFont(defaultFont);
+		settingsButtonText.setColor(Color::Color(0, 122, 243));
+		settingsButtonText.setCharacterSize(35);
+		settingsButtonText.setString("SETTINGS");
+
+		creditsButtonText.setPosition(540, 190);
+		creditsButtonText.setFont(defaultFont);
+		creditsButtonText.setColor(Color::Color(0, 122, 243));
+		creditsButtonText.setCharacterSize(35);
+		creditsButtonText.setString("CREDITS");
+
+		shadeSprite.setTexture(shadeTexture);
+		shadeSprite.setPosition(-50, 0);
 	}
-
-	playButtonText.setPosition(540, 50);
-	playButtonText.setFont(defaultFont);
-	playButtonText.setColor(Color::Color(0, 122, 243));
-	playButtonText.setCharacterSize(55);
-	playButtonText.setString("PLAY");
-
-	exitButtonText.setPosition(540, 230);
-	exitButtonText.setFont(defaultFont);
-	exitButtonText.setColor(Color::Color(0, 122, 243));
-	exitButtonText.setCharacterSize(35);
-	exitButtonText.setString("EXIT");
-
-	settingsButtonText.setPosition(540, 150);
-	settingsButtonText.setFont(defaultFont);
-	settingsButtonText.setColor(Color::Color(0, 122, 243));
-	settingsButtonText.setCharacterSize(35);
-	settingsButtonText.setString("SETTINGS");
-
-	creditsButtonText.setPosition(540, 190);
-	creditsButtonText.setFont(defaultFont);
-	creditsButtonText.setColor(Color::Color(0, 122, 243));
-	creditsButtonText.setCharacterSize(35);
-	creditsButtonText.setString("CREDITS");
-
-	shadeSprite.setTexture(shadeTexture);
-	shadeSprite.setPosition(-50, 0);
 
 	logoSprite.setTexture(logoTexture);
 	logoSprite.setPosition(50, 50);
 
 	rocketSprite.setTexture(rocketTexture);
 	rocketSprite.setPosition(-100, 250);
+	
+	distanceLeftRocket = rocketDestination + -(rocketSprite.getPosition().x);
 
 	//Flames
 	flameSpriteTop.setTexture(flameTexture);
@@ -144,10 +159,12 @@ void MenuClass::initGraphics()
 	for (int i = 0; i < numberOfStars; i++){
 		float number = getRandom(1, 2);
 		starShape[i].setSize(Vector2f(number, number));
-		starShape[i].setPosition(getRandom(-2, 400), getRandom(0, menuWindow->getSize().y));
+		starShape[i].setPosition(getRandom(-2, 400), getRandom(0, menuWindow.getSize().y));
 	}
+
+	firstInit = false;
 }
-void MenuClass::updateGraphics()
+void MenuClass::updateGraphics(RenderWindow &menuWindow)
 {
 	if (rocketSprite.getPosition().x <= rocketDestination){
 		float movement = 0.03 * distanceLeftRocket;
@@ -155,13 +172,13 @@ void MenuClass::updateGraphics()
 		distanceLeftRocket -= movement;
 	}
 
-	if (mouseIsOnButton(&playButtonText)) playButtonText.setColor(Color::Color(255, 255, 0));
+	if (mouseIsOnButton(menuWindow, &playButtonText)) playButtonText.setColor(Color::Color(255, 255, 0));
 	else playButtonText.setColor(Color::Color(0, 122, 243));
-	if (mouseIsOnButton(&exitButtonText)) exitButtonText.setColor(Color::Color(255, 255, 0));
+	if (mouseIsOnButton(menuWindow, &exitButtonText)) exitButtonText.setColor(Color::Color(255, 255, 0));
 	else exitButtonText.setColor(Color::Color(0, 122, 243));
-	if (mouseIsOnButton(&settingsButtonText)) settingsButtonText.setColor(Color::Color(255, 255, 0));
+	if (mouseIsOnButton(menuWindow, &settingsButtonText)) settingsButtonText.setColor(Color::Color(255, 255, 0));
 	else settingsButtonText.setColor(Color::Color(0, 122, 243));
-	if (mouseIsOnButton(&creditsButtonText)) creditsButtonText.setColor(Color::Color(255, 255, 0));
+	if (mouseIsOnButton(menuWindow, &creditsButtonText)) creditsButtonText.setColor(Color::Color(255, 255, 0));
 	else creditsButtonText.setColor(Color::Color(0, 122, 243));
 
 	//Flame animation logic stuff
@@ -177,28 +194,26 @@ void MenuClass::updateGraphics()
 	flameSpriteBottom.setRotation(rocketSprite.getRotation());
 
 	if (animAscend){
-		flameScale += 0.02;
+		flameScale += 0.012;
 		flameSpriteBottom.setScale(flameScale, flameSpriteBottom.getScale().y);
 		flameAnim++;
 	}
 	else if (!animAscend){
-		flameScale -= 0.02;
+		flameScale -= 0.012;
 		flameSpriteBottom.setScale(flameScale, flameSpriteBottom.getScale().y);
 		flameAnim--;
 	}
-
-
 	//Flame Sprite Top
 	flameSpriteTop.setPosition(rocketSprite.getPosition().x - 5, rocketSprite.getPosition().y + 50);
 	flameSpriteTop.setRotation(rocketSprite.getRotation());
 
 	if (animAscend){
-		flameScale += 0.006;
+		flameScale += 0.012;
 		flameSpriteTop.setScale(flameScale, flameSpriteBottom.getScale().y);
 		flameAnim++;
 	}
 	else if (!animAscend){
-		flameScale -= 0.006;
+		flameScale -= 0.012;
 		flameSpriteTop.setScale(flameScale, flameSpriteBottom.getScale().y);
 		flameAnim--;
 	}
@@ -208,44 +223,44 @@ void MenuClass::updateGraphics()
 	for (int i = 0; i < numberOfStars; i++){
 		starShape[i].move(starSpeed[i], 0);
 
-		if (starShape[i].getPosition().x <= -5) starShape[i].setPosition(getRandom(400, 400), getRandom(0, menuWindow->getSize().y));
+		if (starShape[i].getPosition().x <= -5) starShape[i].setPosition(getRandom(400, 400), getRandom(1, menuWindow.getSize().y));
 	}
 }
-void MenuClass::drawGraphics()
+void MenuClass::drawGraphics(RenderWindow &menuWindow)
 {
-	menuWindow->clear();
+	menuWindow.clear();
 
 	for (int i = 0; i < numberOfStars; i++){
-		menuWindow->draw(starShape[i]);
+		menuWindow.draw(starShape[i]);
 	}
-	menuWindow->draw(shadeSprite);
-	menuWindow->draw(logoSprite);
-	menuWindow->draw(rocketSprite);
-	menuWindow->draw(flameSpriteBottom);
-	menuWindow->draw(flameSpriteTop);
-	menuWindow->draw(playButtonText);
-	menuWindow->draw(exitButtonText);
-	menuWindow->draw(settingsButtonText);
-	menuWindow->draw(creditsButtonText);
+	menuWindow.draw(shadeSprite);
+	menuWindow.draw(logoSprite);
+	menuWindow.draw(rocketSprite);
+	menuWindow.draw(flameSpriteBottom);
+	menuWindow.draw(flameSpriteTop);
+	menuWindow.draw(playButtonText);
+	menuWindow.draw(exitButtonText);
+	menuWindow.draw(settingsButtonText);
+	menuWindow.draw(creditsButtonText);
 
-	menuWindow->display();
+	menuWindow.display();
 }
 
-bool MenuClass::mouseIsOnMenu()
+bool MenuClass::mouseIsOnMenu(RenderWindow &menuWindow)
 {
-	if (menuWindow->getPosition().x < Mouse::getPosition().x &&
-		menuWindow->getPosition().y < Mouse::getPosition().y &&
-		menuWindow->getPosition().x + menuWindow->getSize().x > Mouse::getPosition().x &&
-		menuWindow->getPosition().y + menuWindow->getSize().y > Mouse::getPosition().y) return true;
+	if (menuWindow.getPosition().x < Mouse::getPosition().x &&
+		menuWindow.getPosition().y < Mouse::getPosition().y &&
+		menuWindow.getPosition().x + menuWindow.getSize().x > Mouse::getPosition().x &&
+		menuWindow.getPosition().y + menuWindow.getSize().y > Mouse::getPosition().y) return true;
 
 	return false;
 }
-bool MenuClass::mouseIsOnButton(Text *text)
+bool MenuClass::mouseIsOnButton(RenderWindow &menuWindow, Text *text)
 {
-	if (text->getPosition().x < Mouse::getPosition(*menuWindow).x &&
-		text->getPosition().y + (text->getCharacterSize() / 3.6) < Mouse::getPosition(*menuWindow).y &&
-		text->getPosition().x + text->getLocalBounds().width > Mouse::getPosition(*menuWindow).x &&
-		text->getPosition().y + (text->getLocalBounds().height + (text->getCharacterSize() / 3.6)) > Mouse::getPosition(*menuWindow).y) return true;
+	if (text->getPosition().x < Mouse::getPosition(menuWindow).x &&
+		text->getPosition().y + (text->getCharacterSize() / 3.6) < Mouse::getPosition(menuWindow).y &&
+		text->getPosition().x + text->getLocalBounds().width > Mouse::getPosition(menuWindow).x &&
+		text->getPosition().y + (text->getLocalBounds().height + (text->getCharacterSize() / 3.6)) > Mouse::getPosition(menuWindow).y) return true;
 
 	return false;
 }

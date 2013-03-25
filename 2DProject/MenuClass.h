@@ -26,7 +26,7 @@ Space Dash - A student project created with SFML
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
-class MenuClass : private Misc
+class MenuClass : private Misc, private SoundClass
 {
 public:
 	MenuClass(void);
@@ -35,9 +35,6 @@ public:
 	bool showMenu();
 
 private:
-	RenderWindow* menuWindow;
-	SoundClass menuMusic;
-
 	Texture shadeTexture;
 	Sprite shadeSprite;
 
@@ -49,6 +46,8 @@ private:
 	Text exitButtonText;
 	Text settingsButtonText;
 	Text creditsButtonText;
+
+	Text craditsText;
 
 	Texture rocketTexture;
 	Texture flameTexture;
@@ -62,13 +61,17 @@ private:
 	RectangleShape starShape[numberOfStars];
 	float starSpeed[50];
 
-	void initGraphics();
-	void updateGraphics();
-	void drawGraphics();
+	void initGraphics(RenderWindow &menuWindow);
+	void updateGraphics(RenderWindow &menuWindow);
+	void drawGraphics(RenderWindow &menuWindow);
 
 	void closeMenu();
-	bool mouseIsOnMenu();
-	bool mouseIsOnButton(Text *text);
+	bool mouseIsOnMenu(RenderWindow &menuWindow);
+	bool mouseIsOnButton(RenderWindow &menuWindow, Text *text);
+
+	bool firstInit;
+	bool creditsRolling;
+	bool settingsMenu;
 
 	//Animation
 	int flameAnim;

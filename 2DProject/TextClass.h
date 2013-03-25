@@ -21,9 +21,11 @@ Space Dash - A student project created with SFML
 #define TEXTCLASS
 
 #include "Misc.h"
+#include "SoundClass.h"
 
 #include <sstream>
 #include <fstream>
+#include <iostream>
 #include <Windows.h>
 
 #include <SFML/Graphics.hpp>
@@ -32,7 +34,7 @@ using namespace sf;
 
 //namespace sd
 //{
-	class TextClass : public Misc
+	class TextClass : public Misc, public SoundClass
 	{
 	public:
 		TextClass(void);
@@ -41,15 +43,16 @@ using namespace sf;
 		void initScoreText();
 
 		void updateText();
-		void drawText(sf::RenderWindow* window);
+		void drawText(sf::RenderWindow &window);
+		void drawPauseText(RenderWindow &window);
 		void addToScore(int scoreAdd);
 
-		//void readScoreFromFile();
-		//void writeScoreToFile();
-
-		int getPlayerHealth();
+		short getPlayerHealth();
+		int getPlayerFuel();
 		void decreaseHealth(const unsigned short amount);
 		void increaseHealth(const unsigned short amount);
+		void decreaseFuel(const unsigned short amount);
+		void increaseFuel(const unsigned short amount);
 
 	private:
 		sf::Font defaultFont;
@@ -58,13 +61,29 @@ using namespace sf;
 		sf::Text bestScoreText;
 		Text initText;
 		Text healthText;
+		Text fuelText;
 
-		int playerHealth;
+		Text pauseText[2];
+		Text infoText;
+
+		short playerHealth;
+		short playerFuel;
 
 		unsigned long score;
 		unsigned long lastScore;
 		unsigned long bestScore;
 
+		void readScoreFromFile();
+		void writeScoreToFile();
+
+		void readSettingsFromFile();
+		void writeSettingsToFile();
+
+		bool firstInit;
+
+		short fuelCounter;
+		short fuelWarningCounter;
+		short healthWarningCounter;
 	};
 //}
 

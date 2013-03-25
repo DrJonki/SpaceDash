@@ -26,11 +26,16 @@ namespace
 	Player* object;
 	MenuClass menu;
 
-	RenderWindow* gameWindow;
+	RenderWindow gameWindow;
+
+	bool gamePaused = true;
+	bool firstInit = true;
+
+	Event e;
 }
 
 //Function protos
-bool init();
+bool init(bool initBackgroundAndBorders, bool resetScore);
 bool deInit();
 void update();
 void render();
@@ -46,30 +51,27 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		object = new Player;
 		object->setRandomSeed(time(NULL));
 
-		gameWindow = new RenderWindow;
+		while (gameWindow.pollEvent(e));
 
-		gameWindow->create(VideoMode(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height, 32), "Space Dash", Style::Fullscreen);
-		gameWindow->setVerticalSyncEnabled(1);
-		gameWindow->setMouseCursorVisible(0);
+		gameWindow.create(VideoMode(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height, 32), "Space Dash", Style::Fullscreen);
+		//gameWindow->setFramerateLimit(60);
+		gameWindow.setVerticalSyncEnabled(1);
+		gameWindow.setMouseCursorVisible(0);
 
 		sleep(milliseconds(200));
 
 		if (!object->getExitState()){
 			//Init music
 			object->updateMusic();
+			gamePaused = true;
+			firstInit = true; 
 
-			init();
+			init(1, 1);
 			render();
-
-			while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::Escape)){
-				sleep(milliseconds(1));
-				object->updateMusic();
-			}
-
 			update();
 		}
 		
-		gameWindow->close();
+		gameWindow.close();
 		deInit();
 	}
 
@@ -77,22 +79,22 @@ int WINAPI WinMain(HINSTANCE hInstance,
 }
 
 
-bool init()
+bool init(bool initBackgroundAndBorders, bool resetScore)
 {
 	//Set the seed for randomizer
 	object->setRandomSeed(time(NULL));
 
 	//Init text
-	object->initScoreText();
+	if (resetScore) object->initScoreText();
 
 	//Init background
-	object->initBackground();
+	if (initBackgroundAndBorders) object->initBackground();
 
 	//Init player object
 	object->initPlayer();
 
 	//Init borders
-	object->initBorders();
+	if (initBackgroundAndBorders) object->initBorders();
 
 	//Bonus objects
 	object->initBonusObjects();
@@ -100,12 +102,14 @@ bool init()
 	//Init obstacles
 	object->initObstacles();
 
+	//Meters
+	object->initMeters();
+
 	return 1;
 }
 
 bool deInit(){
 	object->stopMusic();
-	delete gameWindow;
 	delete object;
 
 	return 1;
@@ -118,68 +122,115 @@ void update()
 	Time time;
 
 	while (!object->getExitState()){
-		clock.restart();
-		object->updatePlayer();
-		object->updateBonusObjects();
-		object->updateObstacles();
-		object->updateBackground();
-		object->updateBorders();
-		object->updateText();
-		object->updateMusic();
 
-		render();
-
-		time = clock.getElapsedTime();
-		sleep(milliseconds(14 - time.asMilliseconds()));
-
-		if (object->getCrashState()){
-			sleep(milliseconds(500));
-			init();
-
-			do{
-				sleep(milliseconds(1));
-
-				if (Keyboard::isKeyPressed(Keyboard::Space)){
-					object->setCrashState(false);
+		if (Keyboard::isKeyPressed(Keyboard::Escape) || gamePaused){
+			gamePaused = true;
+			while (Keyboard::isKeyPressed(Keyboard::Escape) || Keyboard::isKeyPressed(Keyboard::R)){
+				if (firstInit){
+					object->updateBackground();
+					object->updateBorders();
+					object->updateFlamesPaused();
 				}
-				object->updateMusic();
 				render();
-			}while (!object->getExitState() && object->getCrashState());
+				object->updateMusic();
+
+				while (gameWindow.pollEvent(e));
+
+			}
+			do{
+				if (firstInit){
+					object->updateBackground();
+					object->updateBorders();
+					object->updateFlamesPaused();
+				}
+				render();
+				object->updateMusic();
+
+				while (gameWindow.pollEvent(e));
+
+			}while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::R) && !Keyboard::isKeyPressed(Keyboard::Escape));
+
+			if (Keyboard::isKeyPressed(Keyboard::Space));
+			else if (Keyboard::isKeyPressed(Keyboard::Escape)) object->setExitState(true);
 		}
+
+		if (Keyboard::isKeyPressed(Keyboard::R)){
+			if (firstInit) init(0, 0);
+			else init(0, 1);
+			gamePaused = true;
+			firstInit = true;
+		}
+		else{
+			gamePaused = false;
+			firstInit = false;
+		}
+
+		if (!object->getExitState() && !gamePaused){
+			clock.restart();
+			object->updatePlayer();
+			object->updateBonusObjects();
+			object->updateObstacles();
+			object->updateBackground();
+			object->updateBorders();
+			object->updateMeters();
+			object->updateText();
+			object->updateMusic();
+
+			render();
+
+			time = clock.getElapsedTime();
+			sleep(milliseconds(14 - time.asMilliseconds()));
+
+			if (object->getCrashState()){
+				sleep(milliseconds(750));
+				init(0, 1);
+				gamePaused = true;
+				firstInit = true;
+				object->setCrashState(false);
+			}
+		}
+		while (gameWindow.pollEvent(e));
 	}
 }
 
 
 void render()
 {
-	gameWindow->clear();
-	gameWindow->pushGLStates();
+	gameWindow.clear();
+	gameWindow.pushGLStates();
 
 	//Draw objects
 	//Background
 	object->drawBackground(gameWindow);
 
-	//Player
-	object->drawPlayer(gameWindow);
-	//Flames
-	if (!object->getCrashState()) object->drawFlames(gameWindow);
-
+	//Borders
+	object->drawBorders(gameWindow);
+	
+	//Obstacles
+	object->drawObstacles(gameWindow);
+	
 	//Bonus objects
 	object->drawBonusObjects(gameWindow);
 
-	//Borders
-	object->drawBorders(gameWindow);
+	//Player
+	if (!object->getCrashState()) object->drawPlayer(gameWindow);
+	//Flames
+	if (!object->getCrashState()) object->drawFlames(gameWindow, gamePaused && firstInit);
 
-	//Obstacles
-	object->drawObstacles(gameWindow);
+	//Crash debris
+	object->drawCrashDebris(gameWindow);
+	object->drawDamageParticles(gameWindow);
+
+	//Meters
+	object->drawMeters(gameWindow);
 
 	//Text
 	object->drawText(gameWindow);
-			
-	gameWindow->popGLStates();
-	gameWindow->display();
 
-	if ((Keyboard::isKeyPressed(Keyboard::Escape))) object->setExitState(true);
+	if (gamePaused) object->drawPauseText(gameWindow);
+			
+	gameWindow.popGLStates();
+	gameWindow.display();
 }
 
 

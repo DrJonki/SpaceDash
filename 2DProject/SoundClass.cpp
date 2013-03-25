@@ -25,6 +25,26 @@ SoundClass::SoundClass(void)
 
 	music.setVolume(0);
 	menuMusic.setVolume(0);
+
+	alarmSoundBuffer.loadFromFile("Resources/Audio/alarm.wav");
+	alarmSound.setBuffer(alarmSoundBuffer);
+	alarmSound.setVolume(75);
+	alarmSound.setPitch(1.4);
+
+	scoreSoundBuffer.loadFromFile("Resources/Audio/scoresound.wav");
+	scoreSound.setBuffer(scoreSoundBuffer);
+	scoreSound.setVolume(70);
+	scoreSound.setPitch(1.2);
+
+	fuelSoundBuffer.loadFromFile("Resources/Audio/fuelsound.wav");
+	fuelSound.setBuffer(fuelSoundBuffer);
+	fuelSound.setVolume(99);
+	fuelSound.setPitch(1.5);
+
+	healSoundBuffer.loadFromFile("Resources/Audio/healsound.wav");
+	healSound.setBuffer(healSoundBuffer);
+	healSound.setVolume(99);
+	healSound.setPitch(1.2);
 }
 SoundClass::~SoundClass(void){}
 
@@ -32,9 +52,10 @@ SoundClass::~SoundClass(void){}
 void SoundClass::updateMusic()
 {
 	if (music.getVolume() < 75) music.setVolume(music.getVolume() + 1);
+	
+	int number = 1 + (int)rand()/((int)RAND_MAX/(8-(1)));
 
 	if (music.getStatus() == sf::Music::Stopped){
-		int number = 1 + (int)rand()/((int)RAND_MAX/(7-(1)));
 
 		switch (number){
 			case 1:
@@ -59,7 +80,7 @@ void SoundClass::updateMusic()
 				music.openFromFile("Resources/Audio/music7.wav");
 				break;
 			case 8:
-				music.openFromFile("Resources/Audio/music.wav");
+				music.openFromFile("Resources/Audio/music7.wav");
 				break;
 			default:
 				music.openFromFile("Resources/Audio/music7.wav");
@@ -88,4 +109,28 @@ void SoundClass::stopMenuMusic()
 {
 	menuMusic.stop();
 	menuMusic.setVolume(0);
+}
+
+void SoundClass::updateAlarmSound()
+{
+	if (alarmSound.getStatus() == sf::Sound::Stopped){
+		alarmSound.play();
+	}
+}
+void SoundClass::stopAlarmSound()
+{
+	alarmSound.stop();
+}
+
+void SoundClass::playScoreSound()
+{
+	scoreSound.play();
+}
+void SoundClass::playFuelSound()
+{
+	fuelSound.play();
+}
+void SoundClass::playHealSound()
+{
+	healSound.play();
 }

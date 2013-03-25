@@ -23,6 +23,7 @@ Space Dash - A student project created with SFML
 #include <ctime>
 
 #include <SFML/Audio.hpp>
+using namespace sf;
 
 //namespace sd
 //{
@@ -38,9 +39,28 @@ Space Dash - A student project created with SFML
 		void updateMenuMusic();
 		void stopMenuMusic();
 
+		void updateAlarmSound();
+		void stopAlarmSound();
+
+		void playScoreSound();
+		void playFuelSound();
+		void playHealSound();
+
 	private:
-		sf::Music music;
-		sf::Music menuMusic;
+		Music music;
+		Music menuMusic;
+
+		SoundBuffer alarmSoundBuffer;
+		Sound alarmSound;
+
+		SoundBuffer scoreSoundBuffer;
+		Sound scoreSound;
+
+		SoundBuffer fuelSoundBuffer;
+		Sound fuelSound;
+
+		SoundBuffer healSoundBuffer;
+		Sound healSound;
 	};
 //}
 

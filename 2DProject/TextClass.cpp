@@ -25,19 +25,37 @@ TextClass::TextClass(void)
 	lastScore = 0;
 	bestScore = 0;
 
+	firstInit = true;
+	readScoreFromFile();
+
 	playerHealth = 100;
+	playerFuel = 100;
+
+	fuelCounter = 0;
+	fuelWarningCounter = 0;
+	healthWarningCounter = 0;
 
 	if (!defaultFont.loadFromFile("Resources/Misc/font.otf")){
 		MessageBox(NULL, L"Failed to load font!", L"Error", MB_OK );
 	}
 }
-TextClass::~TextClass(void){}
+TextClass::~TextClass(void)
+{
+	writeScoreToFile();
+}
 
 void TextClass::initScoreText()
 {
-	lastScore = score;
+	if (!firstInit) lastScore = score;
 	score = 0;
 	playerHealth = 100;
+	playerFuel = 100;
+
+	fuelCounter = 0;
+	fuelWarningCounter = 0;
+	healthWarningCounter = 0;
+
+	stopAlarmSound();
 
 	initText.setFont(defaultFont);
 	initText.setString("1234567890abcdefghijklmnstuvwxyz");
@@ -47,8 +65,13 @@ void TextClass::initScoreText()
 
 	healthText.setFont(defaultFont);
 	healthText.setCharacterSize(26);
-	healthText.setColor(Color::Color(255, 153, 0));
-	healthText.setPosition(400, 50);
+	healthText.setColor(Color::Color(0, 255, 0));
+	healthText.setPosition(520 + (playerHealth * 2), 63);
+
+	fuelText.setFont(defaultFont);
+	fuelText.setCharacterSize(26);
+	fuelText.setColor(Color::Color(0, 255, 0));
+	fuelText.setPosition(520 + (playerHealth * 2), 114);
 
 	//Score
 	scoreText.setFont(defaultFont);
@@ -67,6 +90,26 @@ void TextClass::initScoreText()
 	bestScoreText.setCharacterSize(26);
 	bestScoreText.setColor(Color::Cyan);
 	bestScoreText.setPosition(50, 125);
+
+	pauseText[0].setFont(defaultFont);
+	pauseText[0].setString("PAUSED");
+	pauseText[0].setCharacterSize(80);
+	pauseText[0].setColor(Color::Yellow);
+	pauseText[0].setPosition(450, 300);
+	pauseText[1].setFont(defaultFont);
+	pauseText[1].setString("SPACE - Start/Continue\nR - Restart\nEscape - Exit");
+	pauseText[1].setCharacterSize(40);
+	pauseText[1].setColor(Color::Color(255, 153, 0));
+	pauseText[1].setPosition(pauseText[0].getPosition().x, pauseText[0].getPosition().y + 120);
+	infoText.setFont(defaultFont);
+	infoText.setString("------------------------------------------------------\nUSE SPACE BAR TO\nCONTROL THE ROCKET\n\nPRESS ESCAPE DURING\nGAMEPLAY TO PAUSE THE GAME\n\nSCORES WILL BE\nSAVED UPON EXIT\n------------------------------------------------------");
+	infoText.setCharacterSize(20);
+	infoText.setColor(Color::Cyan);
+	infoText.setPosition(50, pauseText[0].getPosition().y + 23);
+
+	updateText();
+
+	firstInit = false;
 }
 
 void TextClass::updateText()
@@ -75,8 +118,42 @@ void TextClass::updateText()
 
 	//Health
 	ss.str("");
-	ss << "Health: " << playerHealth;
+	if (playerHealth <= 10){
+		healthWarningCounter++;
+		ss << "!!! " << playerHealth << " !!!";
+	}
+	else ss << playerHealth;
 	healthText.setString(ss.str());
+	float tempHealth = playerHealth * 2.55;
+	healthText.setColor(Color::Color(255 - tempHealth, tempHealth, 0));
+
+	healthText.setPosition(520 + (playerHealth * 2), 63);
+
+	if (healthWarningCounter <= 5 && playerHealth <= 10) healthText.setColor(Color::Color(236, 20, 20));
+	else if(healthWarningCounter > 5 && healthWarningCounter <= 10 && playerHealth <= 10) healthText.setColor(Color::Color(238, 232, 67));
+
+	//Fuel
+	if (Keyboard::isKeyPressed(Keyboard::Space)) fuelCounter += 2;
+	else fuelCounter += 1;
+	if (fuelCounter >= 40){
+		if (playerFuel > 0) playerFuel -= 1;
+		fuelCounter = 0;
+	}
+	ss.str("");
+	if (playerFuel <= 10){
+		fuelWarningCounter++;
+		ss << "!!! " << playerFuel << " !!!";
+	}
+	else ss << playerFuel;
+	fuelText.setString(ss.str());
+	float tempFuel = playerFuel * 2.55;
+	fuelText.setColor(Color::Color(255 - tempFuel, tempFuel, 0));
+	
+	fuelText.setPosition(520 + (playerFuel * 2), 114);
+
+	if (fuelWarningCounter <= 5 && playerFuel <= 10) fuelText.setColor(Color::Color(236, 20, 20));
+	else if(fuelWarningCounter > 5 && fuelWarningCounter <= 10 && playerFuel <= 10) fuelText.setColor(Color::Color(238, 232, 67));
+
 
 	//Score
 	score++;
@@ -86,6 +163,7 @@ void TextClass::updateText()
 
 
 	//Last score
+	if (lastScore < score) lastScore = score;
 	ss.str("");
 	ss << "Last score: " << lastScore / 10;
 	lastScoreText.setString(ss.str());
@@ -97,15 +175,28 @@ void TextClass::updateText()
 	ss << "Best score: " << bestScore / 10;
 	bestScoreText.setString(ss.str());
 
+	if (fuelWarningCounter >= 10) fuelWarningCounter = 0;
+	if (healthWarningCounter >= 10) healthWarningCounter = 0;
+
+	if (playerHealth <= 10 || playerFuel <= 10) updateAlarmSound();
+	else stopAlarmSound();
+
 	glFlush();
 }
 
-void TextClass::drawText(RenderWindow* window)
+void TextClass::drawText(RenderWindow &window)
 {
-	window->draw(scoreText);
-	window->draw(lastScoreText);
-	window->draw(bestScoreText);
-	window->draw(healthText);
+	window.draw(scoreText);
+	window.draw(lastScoreText);
+	window.draw(bestScoreText);
+	window.draw(healthText);
+	window.draw(fuelText);
+}
+void TextClass::drawPauseText(RenderWindow &window)
+{
+	window.draw(pauseText[0]);
+	window.draw(pauseText[1]);
+	window.draw(infoText);
 }
 
 void TextClass::addToScore(int scoreAdd)
@@ -113,40 +204,52 @@ void TextClass::addToScore(int scoreAdd)
 	score += scoreAdd;
 }
 
-//void TextClass::readScoreFromFile() {
-//	std::string Str;
-//	std::ifstream Stream;
-//	Stream.open("Scores.txt");
-//	if (Stream.is_open()) {
-//		int Len = Stream.tellg();
-//		while (Stream.good()) {
-//			WCHAR S[256];
-//			Stream.getline(S, 256);
-//			Str += S;
-//			Str += L"\n";
-//		};
-//		Stream.close();
-//	}
-//	std::stringstream SS(Str);
-//	SS >> bestScore;
-//}
-//
-//void TextClass::writeScoreToFile() {
-//	std::stringstream SS;
-//	SS << bestScore;
-//	std::ofstream Stream;
-//	Stream.open("Scores.txt");
-//	if (Stream.is_open()) {
-//		Stream.write(SS.str(),SS.str().size());
-//		Stream.close();
-//	}
-//}
+void TextClass::readScoreFromFile()
+{
+	int count = 0;;
+	std::string string;
 
-int TextClass::getPlayerHealth()
+	std::string path(std::getenv("USERPROFILE"));
+	path += "/Documents/SDScores.txt";
+	std::ifstream file(path, std::ifstream::in);
+
+	if (file.good()){
+		while (!file.eof()){
+			if (count == 0){
+				std::getline(file, string);
+				lastScore = std::atoi(string.c_str());
+				lastScore *= 10;
+			}
+			else if (count == 1){
+				std::getline(file, string);
+				bestScore = std::atoi(string.c_str());
+				bestScore *= 10;
+			}
+			count++;
+		}
+	}
+}
+void TextClass::writeScoreToFile()
+{
+	std::string path(std::getenv("USERPROFILE"));
+	path += "/Documents/SDScores.txt";
+
+	std::ofstream file;
+	file.open(path);
+	file << lastScore / 10 << std::endl;
+	file << bestScore / 10;
+	file.close();
+}
+
+void TextClass::readSettingsFromFile(){}
+void TextClass::writeSettingsToFile(){}
+
+
+//Health functions
+short TextClass::getPlayerHealth()
 {
 	return playerHealth;
 }
-
 void TextClass::decreaseHealth(const unsigned short amount)
 {
 	playerHealth -= amount;
@@ -157,5 +260,23 @@ void TextClass::increaseHealth(const unsigned short amount)
 
 	if (playerHealth > 100){
 		playerHealth = playerHealth - (playerHealth - 100);
+	}
+}
+
+//Fuel functions
+int TextClass::getPlayerFuel()
+{
+	return playerFuel;
+}
+void TextClass::decreaseFuel(const unsigned short amount)
+{
+	playerFuel -= amount;
+}
+void TextClass::increaseFuel(const unsigned short amount)
+{
+	playerFuel += amount;
+
+	if (playerFuel > 100){
+		playerFuel = playerFuel - (playerFuel - 100);
 	}
 }

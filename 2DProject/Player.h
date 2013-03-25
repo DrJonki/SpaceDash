@@ -23,6 +23,7 @@ Space Dash - A student project created with SFML
 #include "OtherObjects.h"
 
 #include <Windows.h>
+#include <vector>
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
@@ -37,12 +38,21 @@ using namespace sf;
 		//Player
 		void initPlayer();
 		void updatePlayer();
-		void drawPlayer(sf::RenderWindow* window);
+		void updateFlamesPaused();
+		void drawPlayer(sf::RenderWindow &window);
 
 		//Flames
-		void drawFlames(sf::RenderWindow* window); 
+		void drawFlames(sf::RenderWindow &window, bool paused); 
+
+		void drawCrashDebris(RenderWindow &window);
+		void drawDamageParticles(RenderWindow &window);
 
 	private:
+		std::vector<CircleShape> damageParticle;
+
+		std::vector<RectangleShape> crashDebris;
+		std::vector<float> crashDebrisSpeed;
+
 		sf::Texture playerTexture;
 		sf::Sprite playerSprite;
 
@@ -52,11 +62,11 @@ using namespace sf;
 		sf::Sprite flameSpriteTop;
 		sf::Sprite flameSpriteBottom;
 	
-		double playerRotation;
-		double playerSpeed;
+		float playerRotation;
+		float playerSpeed;
 
-		double baseClimingSpeed;
-		double baseFallingSpeed;
+		float baseClimingSpeed;
+		float baseFallingSpeed;
 
 		int flameAnim;
 		float flameScale;

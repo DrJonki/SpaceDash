@@ -44,9 +44,11 @@ void Obstacle::initObstacles()
 		float ramNum = getRandom(obstacleRadiusMin, obstacleRadiusMax);
 		obstacle[i].setRadius(ramNum);
 		obstacle[i].setOrigin(ramNum, ramNum);
-		obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 2500)), getRandom(100, 1100));
+		obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 3000)), getRandom(100, 1200));
 		obstacle[i].setRotation(0);
 		obstacle[i].setTexture(&obstacleTexture);
+
+		obstacleSpeedMod[i] = getRandom(-2.0f, 2.0f);
 	}
 }
 
@@ -54,7 +56,7 @@ void Obstacle::updateObstacles()
 {	
 	//Obstacle movement
 	for (int i=0; i<numberOfObstacles; i++){
-		obstacle[i].move(-obstacleBaseSpeed, 0);
+		obstacle[i].move(-(obstacleBaseSpeed + obstacleSpeedMod[i]), 0);
 		
 		if (i % 2 == 0) obstacle[i].rotate(1);
 		else obstacle[i].rotate(-1);
@@ -62,17 +64,18 @@ void Obstacle::updateObstacles()
 		if (obstacle[i].getPosition().x < -100){
 			float ramNum = getRandom(obstacleRadiusMin, obstacleRadiusMax);
 			obstacle[i].setRadius(ramNum);
-			obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 2500)), getRandom(100, 1000));
+			obstacle[i].setOrigin(ramNum, ramNum);
+			obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 3000)), getRandom(100, 1200));
 			obstacle[i].setRotation(0);
 		}
 	}
 }
 
-void Obstacle::drawObstacles(RenderWindow* window)
+void Obstacle::drawObstacles(RenderWindow &window)
 {
 	for (int i=0; i<numberOfObstacles; i++){
 		if (obstacle[i].getPosition().x < VideoMode::getDesktopMode().width + 300){
-			window->draw(obstacle[i]);
+			window.draw(obstacle[i]);
 		}
 	}
 }

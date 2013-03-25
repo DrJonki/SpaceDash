@@ -37,35 +37,57 @@ using namespace sf;
 		//Background
 		void initBackground();
 		void updateBackground();
-		void drawBackground(sf::RenderWindow* window);
+		void drawBackground(RenderWindow &window);
 
 		//Borders
 		void initBorders();
 		void updateBorders();
-		void drawBorders(sf::RenderWindow* window);
+		void drawBorders(RenderWindow &window);
 
 		//Bonus objects
 		void initBonusObjects();
 		void updateBonusObjects();
-		void drawBonusObjects(sf::RenderWindow* window);
+		void drawBonusObjects(RenderWindow &window);
+
+		void initRedHue();
+		void updateRedHue();
+		void drawRedHue(RenderWindow &window);
+
+		void initMeters();
+		void updateMeters();
+		void drawMeters(RenderWindow &window);
 
 		//Star
 		void resetStar();
-		sf::Sprite getStarSprite();
+		Sprite getStarSprite();
+		void resetFuelSprite();
+		Sprite getFuelSprite();
+		void resetHealthSprite();
+		Sprite getHealthSprite();
 
 	private:
 		//Resoures
-		static const int numberOfStars = 250;
+		static const int numberOfStars = 300;
 		RectangleShape backgroundStar[numberOfStars];
 		int starSpeed[numberOfStars];
 
-		sf::Texture debrisTextureTop;
-		sf::Texture debrisTextureBottom;
-		sf::Texture starTexture;
+		Texture debrisTextureTop;
+		Texture debrisTextureBottom;
+		Texture starTexture;
+		Texture redHueTexture;
 
-		sf::Sprite debrisSprite[4];
+		Sprite redHueSprite[4];
 
-		sf::Sprite starSprite;
+		Texture healthIconTexture;
+		Texture fuelIconTexture;
+		Sprite healthIconSprite[2];
+		Sprite fuelIconSprite[2];
+		RectangleShape healthMeter;
+		RectangleShape fuelMeter;
+
+		Sprite debrisSprite[4];
+
+		Sprite starSprite;
 	};
 //}
 

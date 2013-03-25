@@ -35,6 +35,15 @@ OtherObjects::OtherObjects(void)
 		setExitState(true);
 		MessageBox(NULL, L"Failed to load star object texture!", L"Error", MB_OK );
 	}
+
+	if (!healthIconTexture.loadFromFile("Resources/Graphics/healthicon.png")){
+		setExitState(true);
+		MessageBox(NULL, L"Failed to load health icon texture!", L"Error", MB_OK );
+	}
+	if (!fuelIconTexture.loadFromFile("Resources/Graphics/fuelicon.png")){
+		setExitState(true);
+		MessageBox(NULL, L"Failed to load fuel icon texture!", L"Error", MB_OK );
+	}
 }
 OtherObjects::~OtherObjects(void){}
 
@@ -46,7 +55,7 @@ void OtherObjects::initBackground()
 		backgroundStar[i].setSize(Vector2f(ramNum, ramNum));
 		backgroundStar[i].setPosition(getRandom(-1, VideoMode::getDesktopMode().width + 1), getRandom(0, VideoMode::getDesktopMode().height));
 
-		starSpeed[i] = -(getRandom(1, 4));
+		starSpeed[i] = -(getRandom(1.0f, 5.0f));
 	}
 }
 
@@ -79,7 +88,7 @@ void OtherObjects::initBorders()
 void OtherObjects::updateBorders()
 {
 	for (int i=0; i<2; i++){
-		debrisSprite[i].move(-(getObstacleBaseSpeed()/4), 0);
+		debrisSprite[i].move(-(getObstacleBaseSpeed() / 1.5), 0);
 
 		if (debrisSprite[i].getPosition().x <= -(debrisSprite[i].getGlobalBounds().width)){
 			if (i == 0){
@@ -93,7 +102,7 @@ void OtherObjects::updateBorders()
 	}
 
 	for (int i=2; i<4; i++){
-		debrisSprite[i].move(-(getObstacleBaseSpeed()/4), 0);
+		debrisSprite[i].move(-(getObstacleBaseSpeed() / 1.5), 0);
 
 		if (debrisSprite[i].getPosition().x <= -(debrisSprite[i].getLocalBounds().width)){
 			if (i == 2){
@@ -111,51 +120,120 @@ void OtherObjects::updateBorders()
 void OtherObjects::initBonusObjects()
 {
 	starSprite.setTexture(starTexture);
-	starSprite.setPosition(getRandom((VideoMode::getDesktopMode().width + 100),(VideoMode::getDesktopMode().width + 2500)),getRandom(100, VideoMode::getDesktopMode().height - 100));
+	starSprite.setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 2500), getRandom(100, VideoMode::getDesktopMode().height - 100));
+
+	fuelIconSprite[1].setTexture(fuelIconTexture);
+	fuelIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 6000), getRandom(100, VideoMode::getDesktopMode().height - 100));
+
+	healthIconSprite[1].setTexture(healthIconTexture);
+	healthIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 15000), getRandom(100, VideoMode::getDesktopMode().height - 100));
 }
 
 void OtherObjects::updateBonusObjects()
 {
 	starSprite.move(-getObstacleBaseSpeed(), 0);
-	if (starSprite.getPosition().x <= -50) starSprite.setPosition(getRandom((VideoMode::getDesktopMode().width + 100),(VideoMode::getDesktopMode().width + 2500)),getRandom(100, VideoMode::getDesktopMode().height - 100));
+	if (starSprite.getPosition().x <= -50) starSprite.setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 2500), getRandom(100, VideoMode::getDesktopMode().height - 100));
+
+	fuelIconSprite[1].move(-getObstacleBaseSpeed(), 0);
+	if (fuelIconSprite[1].getPosition().x <= -50) fuelIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 6000), getRandom(100, VideoMode::getDesktopMode().height - 100));
+
+	healthIconSprite[1].move(-getObstacleBaseSpeed(), 0);
+	if (healthIconSprite[1].getPosition().x <= -50) healthIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 15000), getRandom(100, VideoMode::getDesktopMode().height - 100));
 }
 
 void OtherObjects::resetStar()
 {
-	starSprite.setPosition(getRandom((VideoMode::getDesktopMode().width + 100),(VideoMode::getDesktopMode().width + 2500)),getRandom(100, VideoMode::getDesktopMode().height - 100));
+	starSprite.setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 2500), getRandom(100, VideoMode::getDesktopMode().height - 100));
+}
+void OtherObjects::resetFuelSprite()
+{
+	fuelIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 6000), getRandom(100, VideoMode::getDesktopMode().height - 100));
+}
+void OtherObjects::resetHealthSprite()
+{
+	healthIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + 15000), getRandom(100, VideoMode::getDesktopMode().height - 100));
 }
 
 
-void OtherObjects::drawBackground(RenderWindow* window) 
+void OtherObjects::drawBackground(RenderWindow &window) 
 {
 	for (int i=0; i<numberOfStars; i++){
-		window->draw(backgroundStar[i]);
+		window.draw(backgroundStar[i]);
 	}
 }
 
-void OtherObjects::drawBorders(RenderWindow* window)
+void OtherObjects::drawBorders(RenderWindow &window)
 {
 	for (int i=0; i<2; i++){
-		window->draw(debrisSprite[i]);
+		window.draw(debrisSprite[i]);
 	}
 	for (int i=2; i<4; i++){
-		window->draw(debrisSprite[i]);
+		window.draw(debrisSprite[i]);
 	}
 }
 
-void OtherObjects::drawBonusObjects(RenderWindow* window)
+void OtherObjects::drawBonusObjects(RenderWindow &window)
 {
 	if (starSprite.getPosition().x < VideoMode::getDesktopMode().width + 300){
-		window->draw(starSprite);
-	}	
+		window.draw(starSprite);
+	}
+
+	window.draw(fuelIconSprite[1]);
+	window.draw(healthIconSprite[1]);
 }
-
-
 
 
 Sprite OtherObjects::getStarSprite()
 {
-	Sprite &starSpriteRef = starSprite;
+	Sprite &ref = starSprite;
 
-	return starSpriteRef;
+	return ref;
+}
+Sprite OtherObjects::getFuelSprite()
+{
+	Sprite &ref = fuelIconSprite[1];
+
+	return ref;
+}
+Sprite OtherObjects::getHealthSprite()
+{
+	Sprite &ref = healthIconSprite[1];
+
+	return ref;
+}
+
+
+void OtherObjects::initMeters()
+{
+	healthMeter.setSize(Vector2f(200, 25));
+	healthMeter.setFillColor(Color::Color(0, 255, 0));
+	healthMeter.setScale(1, 1);
+	healthMeter.setPosition(500, 68);
+	healthIconSprite[0].setTexture(healthIconTexture);
+	healthIconSprite[0].setPosition(healthMeter.getPosition().x - 35, healthMeter.getPosition().y);
+
+	fuelMeter.setSize(Vector2f(200, 25));
+	fuelMeter.setFillColor(Color::Color(0, 255, 0));
+	fuelMeter.setScale(1, 1);
+	fuelMeter.setPosition(500, 118);
+	fuelIconSprite[0].setTexture(fuelIconTexture);
+	fuelIconSprite[0].setPosition(fuelMeter.getPosition().x - 35, fuelMeter.getPosition().y);
+}
+void OtherObjects::updateMeters()
+{
+	float tempHealth = getPlayerHealth() * 2.55;
+	healthMeter.setFillColor(Color::Color(255 - tempHealth, tempHealth, 0));
+	healthMeter.setScale(getPlayerHealth() / 100.0f, 1);
+
+	float tempFuel = getPlayerFuel() * 2.55;
+	fuelMeter.setFillColor(Color::Color(255 - tempFuel, tempFuel, 0));
+	fuelMeter.setScale(getPlayerFuel() / 100.0f, 1);
+}
+void OtherObjects::drawMeters(RenderWindow &window)
+{
+	window.draw(healthMeter);
+	window.draw(fuelMeter);
+
+	window.draw(healthIconSprite[0]);
+	window.draw(fuelIconSprite[0]);
 }
