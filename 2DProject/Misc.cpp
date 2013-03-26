@@ -56,7 +56,7 @@ bool Misc::spriteCollision(sf::Sprite *object1, sf::Sprite *object2)
 		object1->getPosition().x < object2->getPosition().x + object2->getLocalBounds().width			&&
 		object1->getPosition().y + (object1->getLocalBounds().height / 2) > object2->getPosition().y	&&
 		object1->getPosition().y - object1->getOrigin().y < object2->getPosition().y + object2->getLocalBounds().height) return true;
-
+	
 	return false;
 }
 
@@ -79,4 +79,69 @@ void Misc::setExitState(bool state)
 bool Misc::getExitState()
 {
 	return exitState;
+}
+
+void Misc::readSettingsFromFile()
+{
+	vSync = true;
+
+	difficulty = 1;
+	hardcore = false;
+
+	showParticles = true;
+
+	playSound = true;
+	playMusic = true;
+
+	int count = 0;;
+	std::string string;
+
+	std::string path(std::getenv("USERPROFILE"));
+	path += "/Documents/SDSettings.txt";
+	std::ifstream file(path, std::ifstream::in);
+
+	if (file.good()){
+		while (!file.eof()){
+			if (count == 0){ //vSync
+				std::getline(file, string);
+				vSync = std::atoi(string.c_str());
+			}
+			else if (count == 1){ //Difficulty
+				std::getline(file, string);
+				difficulty = std::atoi(string.c_str());
+			}
+			else if (count == 2){ //Hardcore
+				std::getline(file, string);
+				hardcore = std::atoi(string.c_str());
+			}
+			else if (count == 3){ //Show particles
+				std::getline(file, string);
+				showParticles = std::atoi(string.c_str());
+			}
+			else if (count == 4){ //Play sound
+				std::getline(file, string);
+				playSound = std::atoi(string.c_str());
+			}
+			else if (count == 5){ //Play music
+				std::getline(file, string);
+				playMusic = std::atoi(string.c_str());
+			}
+			count++;
+		}
+	}
+}
+void Misc::writeSettingsToFile()
+{
+	std::string path(std::getenv("USERPROFILE"));
+	path += "/Documents/SDSettings.txt";
+
+	std::ofstream file;
+	file.open(path);
+	file << vSync << std::endl;	//vSync
+	file << difficulty << std::endl;	//Difficulty
+	file << hardcore << std::endl;		//HardCore
+	file << showParticles << std::endl; //Show particles
+	file << playSound << std::endl;		//Play sound
+	file << playMusic;					//Play music
+	file.close();
 }

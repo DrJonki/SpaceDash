@@ -22,11 +22,6 @@ Space Dash - A student project created with SFML
 
 #include "OtherObjects.h"
 
-#include <Windows.h>
-#include <vector>
-#include <SFML/Graphics.hpp>
-using namespace sf;
-
 //namespace sd
 //{
 	class Player : public OtherObjects

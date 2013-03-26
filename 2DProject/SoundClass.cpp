@@ -55,7 +55,7 @@ void SoundClass::updateMusic()
 	
 	int number = 1 + (int)rand()/((int)RAND_MAX/(8-(1)));
 
-	if (music.getStatus() == sf::Music::Stopped){
+	if (music.getStatus() == sf::Music::Stopped && playMusic){
 
 		switch (number){
 			case 1:
@@ -94,7 +94,7 @@ void SoundClass::updateMenuMusic()
 {
 	if (menuMusic.getVolume() < 75) menuMusic.setVolume(menuMusic.getVolume() + 0.2);
 
-	if (menuMusic.getStatus() == sf::Music::Stopped){
+	if (menuMusic.getStatus() == sf::Music::Stopped && playMusic){
 		menuMusic.openFromFile("Resources/Audio/menumusic.wav");
 		menuMusic.play();
 	}
@@ -113,7 +113,7 @@ void SoundClass::stopMenuMusic()
 
 void SoundClass::updateAlarmSound()
 {
-	if (alarmSound.getStatus() == sf::Sound::Stopped){
+	if (alarmSound.getStatus() == sf::Sound::Stopped && playSound){
 		alarmSound.play();
 	}
 }
@@ -124,13 +124,13 @@ void SoundClass::stopAlarmSound()
 
 void SoundClass::playScoreSound()
 {
-	scoreSound.play();
+	if (playSound) scoreSound.play();
 }
 void SoundClass::playFuelSound()
 {
-	fuelSound.play();
+	if (playSound) fuelSound.play();
 }
 void SoundClass::playHealSound()
 {
-	healSound.play();
+	if (playSound) healSound.play();
 }

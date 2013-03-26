@@ -20,14 +20,14 @@ Space Dash - A student project created with SFML
 #ifndef SOUNDCLASS
 #define SOUNDCLASS
 
+#include "Misc.h"
 #include <ctime>
 
 #include <SFML/Audio.hpp>
-using namespace sf;
 
 //namespace sd
 //{
-	class SoundClass
+	class SoundClass : public Misc
 	{
 	public:
 		SoundClass(void);

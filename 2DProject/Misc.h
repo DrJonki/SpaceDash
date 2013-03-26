@@ -22,9 +22,14 @@ Space Dash - A student project created with SFML
 
 #include <cstdlib>
 #include <cmath>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <Windows.h>
 
 #include <SFML/Graphics.hpp>
 using namespace sf;
+
 
 //namespace sd
 //{
@@ -46,6 +51,20 @@ using namespace sf;
 
 		bool playerCollision(CircleShape *object1, CircleShape *object2);
 		bool spriteCollision(Sprite *object1, Sprite *object2);
+
+		void readSettingsFromFile();
+		void writeSettingsToFile();
+
+		//Settings
+		bool vSync;
+
+		short difficulty;
+		bool hardcore;
+
+		bool showParticles;
+
+		bool playSound;
+		bool playMusic;
 
 	private:
 		bool crashState;

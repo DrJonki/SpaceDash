@@ -19,14 +19,9 @@ Space Dash - A student project created with SFML
 #ifndef MENUCLASS
 #define MENUCLASS
 
-#include "SoundClass.h"
-#include "Misc.h"
+#include "TextClass.h"
 
-#include <Windows.h>
-#include <SFML/Graphics.hpp>
-using namespace sf;
-
-class MenuClass : private Misc, private SoundClass
+class MenuClass : private TextClass
 {
 public:
 	MenuClass(void);
@@ -35,43 +30,67 @@ public:
 	bool showMenu();
 
 private:
+	//Graphics
 	Texture shadeTexture;
 	Sprite shadeSprite;
-
 	Texture logoTexture;
 	Sprite logoSprite;
-
-	Font defaultFont;
-	Text playButtonText;
-	Text exitButtonText;
-	Text settingsButtonText;
-	Text creditsButtonText;
-
-	Text craditsText;
-
 	Texture rocketTexture;
 	Texture flameTexture;
 	Sprite rocketSprite;
 	Sprite flameSpriteTop;
 	Sprite flameSpriteBottom;
+
+
+	//Text stuff
+	Font defaultFont;
+	//Main menu text
+	Text playButtonText;
+	Text exitButtonText;
+	Text scoreButtonText;
+	Text optionsButtonText;
+	Text creditsButtonText;
+	Text backButtonText;
+	//Sub menu texts
+	Text scoreText[7];
+	Text optionsText[8];
+	Text creditsText[2];
+	Text infoText;
+
+
+	//Movement logic
 	float distanceLeftRocket;
 	float rocketDestination;
+	float distanceLeftLogo;
+	float logoDestination;
 
-	static const int numberOfStars = 50;
+
+	//Star background
+	static const int numberOfStars = 75;
 	RectangleShape starShape[numberOfStars];
-	float starSpeed[50];
+	float starSpeed[numberOfStars];
 
-	void initGraphics(RenderWindow &menuWindow);
+
+	//Functions
+	void initGraphics(RenderWindow &menuWindow, bool firstInit);
 	void updateGraphics(RenderWindow &menuWindow);
 	void drawGraphics(RenderWindow &menuWindow);
-
 	void closeMenu();
 	bool mouseIsOnMenu(RenderWindow &menuWindow);
 	bool mouseIsOnButton(RenderWindow &menuWindow, Text *text);
+	void scoreMenu(RenderWindow &window, bool init);
+	void optionsMenu(RenderWindow &window, bool init);
+	void creditsMenu(RenderWindow &window, bool init);
 
-	bool firstInit;
-	bool creditsRolling;
-	bool settingsMenu;
+
+	//System bools
+	bool minimized;
+	bool inSubMenu;
+	
+	bool inCreditsMenu;
+	bool inOptionsMenu;
+	bool inScoreMenu;
+
 
 	//Animation
 	int flameAnim;

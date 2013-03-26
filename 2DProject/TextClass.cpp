@@ -25,8 +25,14 @@ TextClass::TextClass(void)
 	lastScore = 0;
 	bestScore = 0;
 
+	bestScoreEasy = 0;
+	bestScoreMedium = 0;
+	bestScoreHard = 0;
+	bestScoreEasyHC = 0;
+	bestScoreMediumHC = 0;
+	bestScoreHardHC = 0;
+
 	firstInit = true;
-	readScoreFromFile();
 
 	playerHealth = 100;
 	playerFuel = 100;
@@ -133,9 +139,9 @@ void TextClass::updateText()
 	else if(healthWarningCounter > 5 && healthWarningCounter <= 10 && playerHealth <= 10) healthText.setColor(Color::Color(238, 232, 67));
 
 	//Fuel
-	if (Keyboard::isKeyPressed(Keyboard::Space)) fuelCounter += 2;
-	else fuelCounter += 1;
-	if (fuelCounter >= 40){
+	if (Keyboard::isKeyPressed(Keyboard::Space)) fuelCounter += difficulty * 2;
+	else fuelCounter += difficulty;
+	if (fuelCounter >= 60){
 		if (playerFuel > 0) playerFuel -= 1;
 		fuelCounter = 0;
 	}
@@ -149,14 +155,15 @@ void TextClass::updateText()
 	float tempFuel = playerFuel * 2.55;
 	fuelText.setColor(Color::Color(255 - tempFuel, tempFuel, 0));
 	
-	fuelText.setPosition(520 + (playerFuel * 2), 114);
+	if (hardcore) fuelText.setPosition(520 + (playerFuel * 2), 70);
+	else fuelText.setPosition(520 + (playerFuel * 2), 114);
 
 	if (fuelWarningCounter <= 5 && playerFuel <= 10) fuelText.setColor(Color::Color(236, 20, 20));
 	else if(fuelWarningCounter > 5 && fuelWarningCounter <= 10 && playerFuel <= 10) fuelText.setColor(Color::Color(238, 232, 67));
 
 
 	//Score
-	score++;
+	score += (difficulty * (hardcore + 1));
 	ss.str("");
 	ss << "Current score: " << score / 10;
 	scoreText.setString(ss.str());
@@ -189,7 +196,7 @@ void TextClass::drawText(RenderWindow &window)
 	window.draw(scoreText);
 	window.draw(lastScoreText);
 	window.draw(bestScoreText);
-	window.draw(healthText);
+	if (!hardcore) window.draw(healthText);
 	window.draw(fuelText);
 }
 void TextClass::drawPauseText(RenderWindow &window)
@@ -217,33 +224,67 @@ void TextClass::readScoreFromFile()
 		while (!file.eof()){
 			if (count == 0){
 				std::getline(file, string);
-				lastScore = std::atoi(string.c_str());
-				lastScore *= 10;
+				bestScoreEasy = std::atoi(string.c_str());
+				bestScoreEasy *= 10;
 			}
-			else if (count == 1){
+			if (count == 1){
 				std::getline(file, string);
-				bestScore = std::atoi(string.c_str());
-				bestScore *= 10;
+				bestScoreMedium = std::atoi(string.c_str());
+				bestScoreMedium *= 10;
+			}
+			if (count == 2){
+				std::getline(file, string);
+				bestScoreHard = std::atoi(string.c_str());
+				bestScoreHard *= 10;
+			}
+			if (count == 3){
+				std::getline(file, string);
+				bestScoreEasyHC = std::atoi(string.c_str());
+				bestScoreEasyHC *= 10;
+			}
+			if (count == 4){
+				std::getline(file, string);
+				bestScoreMediumHC = std::atoi(string.c_str());
+				bestScoreMediumHC *= 10;
+			}
+			if (count == 5){
+				std::getline(file, string);
+				bestScoreHardHC = std::atoi(string.c_str());
+				bestScoreHardHC *= 10;
 			}
 			count++;
 		}
 	}
+
+	if (difficulty == 1 && !hardcore) bestScore = bestScoreEasy;
+	else if (difficulty == 2 && !hardcore) bestScore = bestScoreMedium;
+	else if (difficulty == 3 && !hardcore) bestScore = bestScoreHard;
+	else if (difficulty == 1 && hardcore) bestScore = bestScoreEasyHC;
+	else if (difficulty == 2 && hardcore) bestScore = bestScoreMediumHC;
+	else if (difficulty == 3 && hardcore) bestScore = bestScoreHardHC;
 }
 void TextClass::writeScoreToFile()
 {
+	if ((difficulty == 1 && !hardcore) && bestScore > bestScoreEasy) bestScoreEasy = bestScore;
+	else if ((difficulty == 2 && !hardcore) && bestScore > bestScoreMedium) bestScoreMedium = bestScore;
+	else if ((difficulty == 3 && !hardcore) && bestScore > bestScoreHard) bestScoreHard = bestScore;
+	else if ((difficulty == 1 && hardcore) && bestScore > bestScoreEasyHC) bestScoreEasyHC = bestScore;
+	else if ((difficulty == 2 && hardcore) && bestScore > bestScoreMediumHC) bestScoreMediumHC = bestScore;
+	else if ((difficulty == 3 && hardcore) && bestScore > bestScoreHardHC) bestScoreHardHC = bestScore;
+
 	std::string path(std::getenv("USERPROFILE"));
 	path += "/Documents/SDScores.txt";
 
 	std::ofstream file;
 	file.open(path);
-	file << lastScore / 10 << std::endl;
-	file << bestScore / 10;
+	file << bestScoreEasy / 10 << std::endl;
+	file << bestScoreMedium / 10 << std::endl;
+	file << bestScoreHard / 10 << std::endl;
+	file << bestScoreEasyHC / 10 << std::endl;
+	file << bestScoreMediumHC / 10 << std::endl;
+	file << bestScoreHardHC / 10;
 	file.close();
 }
-
-void TextClass::readSettingsFromFile(){}
-void TextClass::writeSettingsToFile(){}
-
 
 //Health functions
 short TextClass::getPlayerHealth()
@@ -275,7 +316,7 @@ void TextClass::decreaseFuel(const unsigned short amount)
 void TextClass::increaseFuel(const unsigned short amount)
 {
 	playerFuel += amount;
-
+	
 	if (playerFuel > 100){
 		playerFuel = playerFuel - (playerFuel - 100);
 	}

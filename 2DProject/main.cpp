@@ -49,13 +49,13 @@ int WINAPI WinMain(HINSTANCE hInstance,
 {
 	while (menu.showMenu()){
 		object = new Player;
+		object->readSettingsFromFile();
+		object->readScoreFromFile();
 		object->setRandomSeed(time(NULL));
 
-		while (gameWindow.pollEvent(e));
-
 		gameWindow.create(VideoMode(VideoMode::getDesktopMode().width, VideoMode::getDesktopMode().height, 32), "Space Dash", Style::Fullscreen);
-		//gameWindow->setFramerateLimit(60);
-		gameWindow.setVerticalSyncEnabled(1);
+		if (!object->vSync) gameWindow.setFramerateLimit(60);
+		gameWindow.setVerticalSyncEnabled(object->vSync);
 		gameWindow.setMouseCursorVisible(0);
 
 		sleep(milliseconds(200));
@@ -110,6 +110,7 @@ bool init(bool initBackgroundAndBorders, bool resetScore)
 
 bool deInit(){
 	object->stopMusic();
+	object->writeScoreToFile();
 	delete object;
 
 	return 1;
@@ -133,9 +134,6 @@ void update()
 				}
 				render();
 				object->updateMusic();
-
-				while (gameWindow.pollEvent(e));
-
 			}
 			do{
 				if (firstInit){
@@ -145,8 +143,6 @@ void update()
 				}
 				render();
 				object->updateMusic();
-
-				while (gameWindow.pollEvent(e));
 
 			}while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::R) && !Keyboard::isKeyPressed(Keyboard::Escape));
 
@@ -189,7 +185,6 @@ void update()
 				object->setCrashState(false);
 			}
 		}
-		while (gameWindow.pollEvent(e));
 	}
 }
 
@@ -228,6 +223,10 @@ void render()
 	object->drawText(gameWindow);
 
 	if (gamePaused) object->drawPauseText(gameWindow);
+
+	while (gameWindow.pollEvent(e)){
+		if (e.type == Event::LostFocus) gamePaused = true;
+	}
 			
 	gameWindow.popGLStates();
 	gameWindow.display();

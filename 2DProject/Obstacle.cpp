@@ -38,6 +38,16 @@ Obstacle::~Obstacle(void)
 
 void Obstacle::initObstacles()
 {
+	obstacle.clear();
+	obstacleSpeedMod.clear();
+
+	numberOfObstacles = 35 + (difficulty * 15);
+
+	for (int i = 0; i < numberOfObstacles; i++){
+		obstacle.push_back(CircleShape());
+		obstacleSpeedMod.push_back(getRandom(-3.0f, 3.0f));
+	}
+
 	//Init obstacle objects
 	for (int i=0; i<numberOfObstacles; i++){
 
@@ -47,8 +57,6 @@ void Obstacle::initObstacles()
 		obstacle[i].setPosition(getRandom((VideoMode::getDesktopMode().width + 300), (VideoMode::getDesktopMode().width + 3000)), getRandom(100, 1200));
 		obstacle[i].setRotation(0);
 		obstacle[i].setTexture(&obstacleTexture);
-
-		obstacleSpeedMod[i] = getRandom(-2.0f, 2.0f);
 	}
 }
 

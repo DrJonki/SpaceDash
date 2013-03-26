@@ -21,10 +21,6 @@ Space Dash - A student project created with SFML
 
 #include "Obstacle.h"
 
-#include <Windows.h>
-#include <SFML/Graphics.hpp>
-using namespace sf;
-
 //namespace sd
 //{
 	class OtherObjects : public Obstacle

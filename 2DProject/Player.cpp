@@ -109,9 +109,13 @@ void Player::updatePlayer()
 	//Collision checks
 	//Borders
 	if ((playerSprite.getPosition().y <= playerSprite.getGlobalBounds().height / 2 ) || ((playerSprite.getPosition().y + (playerSprite.getGlobalBounds().height / 2)) >= (VideoMode::getDesktopMode().height))){
-		decreaseHealth(1);
 
 		for (int i = 0; i < 2; i++){
+			decreaseHealth(difficulty);
+			if (getPlayerHealth() < 0){
+				short num = -(getPlayerHealth());
+				increaseHealth(num);
+			}
 			crashDebrisSpeed.push_back(getRandom(-2, 2));
 
 			crashDebris.push_back(RectangleShape());
@@ -123,14 +127,18 @@ void Player::updatePlayer()
 			crashDebris.back().setPosition(collisionCircle[0].getPosition().x + getRandom(-5, 5), collisionCircle[0].getPosition().y + (getRandom(-5, 5)));
 		}
 
-		if (getPlayerHealth() <= 0) setCrashState(true);
+		if (getPlayerHealth() <= 0 || hardcore) setCrashState(true);
 	}
 
 	//Obstacles
 	for (int i=0; i<getNumberOfObstacles(); i++){
 		if (playerCollision(&collisionCircle[0], &getObstacleObject(i))){
-			if (getPlayerHealth() > 0) decreaseHealth(1);
-			if (getPlayerHealth() <= 0) setCrashState(true);
+			if (getPlayerHealth() > 0) decreaseHealth(difficulty);
+			if (getPlayerHealth() < 0){
+				short num = -(getPlayerHealth());
+				increaseHealth(num);
+			}
+			if (getPlayerHealth() <= 0 || hardcore) setCrashState(true);
 
 			crashDebrisSpeed.push_back(getRandom(-2, 2));
 			
@@ -143,8 +151,12 @@ void Player::updatePlayer()
 			crashDebris.back().setPosition(collisionCircle[0].getPosition().x + getRandom(-5, 5), collisionCircle[0].getPosition().y + (getRandom(-5, 5)));
 		}
 		if (playerCollision(&collisionCircle[1], &getObstacleObject(i))){
-			if (getPlayerHealth() > 0) decreaseHealth(1);
-			if (getPlayerHealth() <= 0) setCrashState(true);
+			if (getPlayerHealth() > 0) decreaseHealth(difficulty);
+			if (getPlayerHealth() < 0){
+				short num = -(getPlayerHealth());
+				increaseHealth(num);
+			}
+			if (getPlayerHealth() <= 0 || hardcore) setCrashState(true);
 			
 			crashDebrisSpeed.push_back(getRandom(-2, 2));
 
@@ -157,8 +169,12 @@ void Player::updatePlayer()
 			crashDebris.back().setPosition(collisionCircle[1].getPosition().x + getRandom(-3, 3), collisionCircle[1].getPosition().y + (getRandom(-3, 3)));
 		}
 		if (playerCollision(&collisionCircle[2], &getObstacleObject(i))){
-			if (getPlayerHealth() > 0) decreaseHealth(1);
-			if (getPlayerHealth() <= 0) setCrashState(true);
+			if (getPlayerHealth() > 0) decreaseHealth(difficulty);
+			if (getPlayerHealth() < 0){
+				short num = -(getPlayerHealth());
+				increaseHealth(num);
+			}
+			if (getPlayerHealth() <= 0 || hardcore) setCrashState(true);
 			
 			crashDebrisSpeed.push_back(getRandom(-2, 2));
 
@@ -172,7 +188,11 @@ void Player::updatePlayer()
 		}
 	}
 
-	if (1){
+
+
+
+
+	if (0){
 		crashDebrisSpeed.push_back(getRandom(-2, 2));
 
 		crashDebris.push_back(RectangleShape());
@@ -189,6 +209,7 @@ void Player::updatePlayer()
 		damageParticle.back().setPosition(collisionCircle[0].getPosition().x + getRandom(-5, 5), collisionCircle[0].getPosition().y + (getRandom(-5, 5)));
 	}*/
 
+	//Updates
 	//Crash debris
 	for (int i = 0; i < crashDebris.size(); i++){
 		crashDebris[i].move(-(getObstacleBaseSpeed() / 2), crashDebrisSpeed[i]);
@@ -247,7 +268,7 @@ void Player::updatePlayer()
 
 	//Bonus objects
 	if (spriteCollision(&playerSprite, &getStarSprite())){
-		addToScore(500);
+		addToScore(500 * (difficulty * (hardcore + 1)));
 		playScoreSound();
 		resetStar();
 	}
@@ -397,13 +418,17 @@ void Player::drawFlames(RenderWindow &window, bool paused)
 
 void Player::drawCrashDebris(RenderWindow &window)
 {
-	for (int i = 0; i < crashDebris.size(); i++){
-		window.draw(crashDebris[i]);
+	if (showParticles){
+		for (int i = 0; i < crashDebris.size(); i++){
+			window.draw(crashDebris[i]);
+		}
 	}
 }
 void Player::drawDamageParticles(RenderWindow &window)
 {
-	for (int i = 0; i < damageParticle.size(); i++){
-		window.draw(damageParticle[i]);
+	if (showParticles){
+		for (int i = 0; i < damageParticle.size(); i++){
+			window.draw(damageParticle[i]);
+		}
 	}
 }

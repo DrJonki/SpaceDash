@@ -21,10 +21,6 @@ Space Dash - A student project created with SFML
 
 #include "TextClass.h"
 
-#include <Windows.h>
-#include <SFML/Graphics.hpp>
-using namespace sf;
-
 class Obstacle : public TextClass
 {
 public:
@@ -33,7 +29,7 @@ public:
 
 	void initObstacles();
 	void updateObstacles();
-	void drawObstacles(sf::RenderWindow &window);
+	void drawObstacles(RenderWindow &window);
 
 	int getNumberOfObstacles();
 	double getObstacleBaseSpeed();
@@ -42,9 +38,9 @@ public:
 private:
 	sf::Texture obstacleTexture;
 	
-	static const int numberOfObstacles = 45;
-	CircleShape obstacle[numberOfObstacles];
-	int obstacleSpeedMod[numberOfObstacles];
+	int numberOfObstacles;
+	std::vector<CircleShape> obstacle;
+	std::vector<int> obstacleSpeedMod;
 	float obstacleRadiusMin;
 	float obstacleRadiusMax;
 
