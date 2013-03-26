@@ -21,7 +21,7 @@ Space Dash - A student project created with SFML
 
 #include "TextClass.h"
 
-class MenuClass : private TextClass
+class MenuClass : public TextClass
 {
 public:
 	MenuClass(void);

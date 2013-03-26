@@ -45,10 +45,7 @@ TextClass::TextClass(void)
 		MessageBox(NULL, L"Failed to load font!", L"Error", MB_OK );
 	}
 }
-TextClass::~TextClass(void)
-{
-	writeScoreToFile();
-}
+TextClass::~TextClass(void){}
 
 void TextClass::initScoreText()
 {
@@ -116,6 +113,16 @@ void TextClass::initScoreText()
 	updateText();
 
 	firstInit = false;
+}
+void TextClass::resetBestScore(){
+	bestScore = 0;
+
+	bestScoreEasy = 0;
+	bestScoreMedium = 0;
+	bestScoreHard = 0;
+	bestScoreEasyHC = 0;
+	bestScoreMediumHC = 0;
+	bestScoreHardHC = 0;
 }
 
 void TextClass::updateText()
@@ -217,7 +224,7 @@ void TextClass::readScoreFromFile()
 	std::string string;
 
 	std::string path(std::getenv("USERPROFILE"));
-	path += "/Documents/SDScores.txt";
+	path += "/Documents/SDScores.dat";
 	std::ifstream file(path, std::ifstream::in);
 
 	if (file.good()){
@@ -265,15 +272,15 @@ void TextClass::readScoreFromFile()
 }
 void TextClass::writeScoreToFile()
 {
-	if ((difficulty == 1 && !hardcore) && bestScore > bestScoreEasy) bestScoreEasy = bestScore;
-	else if ((difficulty == 2 && !hardcore) && bestScore > bestScoreMedium) bestScoreMedium = bestScore;
-	else if ((difficulty == 3 && !hardcore) && bestScore > bestScoreHard) bestScoreHard = bestScore;
-	else if ((difficulty == 1 && hardcore) && bestScore > bestScoreEasyHC) bestScoreEasyHC = bestScore;
-	else if ((difficulty == 2 && hardcore) && bestScore > bestScoreMediumHC) bestScoreMediumHC = bestScore;
-	else if ((difficulty == 3 && hardcore) && bestScore > bestScoreHardHC) bestScoreHardHC = bestScore;
+	if ((difficulty == 1 && !hardcore) && (bestScore > bestScoreEasy)) bestScoreEasy = bestScore;
+	else if ((difficulty == 2 && !hardcore) && (bestScore > bestScoreMedium)) bestScoreMedium = bestScore;
+	else if ((difficulty == 3 && !hardcore) && (bestScore > bestScoreHard)) bestScoreHard = bestScore;
+	else if ((difficulty == 1 && hardcore) && (bestScore > bestScoreEasyHC)) bestScoreEasyHC = bestScore;
+	else if ((difficulty == 2 && hardcore) && (bestScore > bestScoreMediumHC)) bestScoreMediumHC = bestScore;
+	else if ((difficulty == 3 && hardcore) && (bestScore > bestScoreHardHC)) bestScoreHardHC = bestScore;
 
 	std::string path(std::getenv("USERPROFILE"));
-	path += "/Documents/SDScores.txt";
+	path += "/Documents/SDScores.dat";
 
 	std::ofstream file;
 	file.open(path);

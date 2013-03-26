@@ -19,9 +19,9 @@ Space Dash - A student project created with SFML
 #ifndef OBSTACLE
 #define OBSTACLE
 
-#include "TextClass.h"
+#include "MenuClass.h"
 
-class Obstacle : public TextClass
+class Obstacle : public MenuClass
 {
 public:
 	Obstacle(void);

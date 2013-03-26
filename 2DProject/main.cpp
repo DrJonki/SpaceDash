@@ -24,7 +24,6 @@ Space Dash - A student project created with SFML
 namespace
 {
 	Player* object;
-	MenuClass menu;
 
 	RenderWindow gameWindow;
 
@@ -36,7 +35,7 @@ namespace
 
 //Function protos
 bool init(bool initBackgroundAndBorders, bool resetScore);
-bool deInit();
+bool deInit(bool quit);
 void update();
 void render();
 void network();
@@ -47,8 +46,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   LPSTR lpCmdLine, 
 				   int nCmdShow)
 {
-	while (menu.showMenu()){
-		object = new Player;
+	object = new Player;
+
+	while (object->showMenu()){
 		object->readSettingsFromFile();
 		object->readScoreFromFile();
 		object->setRandomSeed(time(NULL));
@@ -72,8 +72,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		}
 		
 		gameWindow.close();
-		deInit();
+		deInit(0);
 	}
+
+	deInit(1);
 
 	return 0;
 }
@@ -108,10 +110,11 @@ bool init(bool initBackgroundAndBorders, bool resetScore)
 	return 1;
 }
 
-bool deInit(){
+bool deInit(bool quit){
 	object->stopMusic();
 	object->writeScoreToFile();
 	delete object;
+	if (!quit) object = new Player;
 
 	return 1;
 }

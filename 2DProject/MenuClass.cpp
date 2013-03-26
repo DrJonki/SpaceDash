@@ -62,8 +62,7 @@ bool MenuClass::showMenu()
 	RenderWindow menuWindow;
 	menuWindow.create(VideoMode(800, 400, 32), "Space Dash", Style::None);
 	menuWindow.setPosition(Vector2i((VideoMode::getDesktopMode().width / 2) - (menuWindow.getSize().x / 2), (VideoMode::getDesktopMode().height / 2) - (menuWindow.getSize().y / 2)));
-	if (!vSync) menuWindow.setFramerateLimit(60);
-	menuWindow.setVerticalSyncEnabled(vSync);
+	menuWindow.setFramerateLimit(60);
 	updateMenuMusic();
 	initGraphics(menuWindow, 1);
 
@@ -147,7 +146,6 @@ bool MenuClass::showMenu()
 void MenuClass::closeMenu()
 {
 	writeSettingsToFile();
-	writeScoreToFile();
 	stopMenuMusic();
 }
 
@@ -437,7 +435,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 		optionsText[0].setString("OPTIONS");
 
 		//Vsync
-		optionsText[1].setPosition(25, 75);
+		optionsText[1].setPosition(50, 100);
 		optionsText[1].setFont(defaultFont);
 		optionsText[1].setCharacterSize(20);
 		if (vSync){
@@ -449,7 +447,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[1].setString("V-Sync (OFF)");
 		}
 		//Sounds
-		optionsText[2].setPosition(25, optionsText[1].getPosition().y + 35);
+		optionsText[2].setPosition(50, optionsText[1].getPosition().y + 35);
 		optionsText[2].setFont(defaultFont);
 		optionsText[2].setCharacterSize(20);
 		if (playSound){
@@ -461,7 +459,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[2].setString("Sound (OFF)");
 		}
 		//Music
-		optionsText[3].setPosition(25, optionsText[2].getPosition().y + 25);
+		optionsText[3].setPosition(50, optionsText[2].getPosition().y + 25);
 		optionsText[3].setFont(defaultFont);
 		optionsText[3].setCharacterSize(20);
 		if (playMusic){
@@ -473,7 +471,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[3].setString("Music (OFF)");
 		}
 		//Easy
-		optionsText[4].setPosition(25,  optionsText[3].getPosition().y + 50);
+		optionsText[4].setPosition(50,  optionsText[3].getPosition().y + 50);
 		optionsText[4].setFont(defaultFont);
 		optionsText[4].setCharacterSize(20);
 		if (difficulty == 1){
@@ -485,7 +483,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[4].setString("Easy");
 		}
 		//Medium
-		optionsText[5].setPosition(25, optionsText[4].getPosition().y + 25);
+		optionsText[5].setPosition(50, optionsText[4].getPosition().y + 25);
 		optionsText[5].setFont(defaultFont);
 		optionsText[5].setCharacterSize(20);
 		if (difficulty == 2){
@@ -497,7 +495,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[5].setString("Medium");
 		}
 		//Hard
-		optionsText[6].setPosition(25,  optionsText[5].getPosition().y + 25);
+		optionsText[6].setPosition(50,  optionsText[5].getPosition().y + 25);
 		optionsText[6].setFont(defaultFont);
 		optionsText[6].setCharacterSize(20);
 		if (difficulty == 3){
@@ -509,7 +507,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[6].setString("Hard");
 		}
 		//Hardcore
-		optionsText[7].setPosition(25,  optionsText[6].getPosition().y + 35);
+		optionsText[7].setPosition(50,  optionsText[6].getPosition().y + 35);
 		optionsText[7].setFont(defaultFont);
 		optionsText[7].setCharacterSize(20);
 		if (hardcore){
@@ -614,7 +612,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 		}
 		//Hard
 		if (mouseIsOnButton(window, &optionsText[6])){
-			infoText.setString("- There are even moremeteorites\n- Increased fuel consumption\n- You're more fragile\n- Score increases faster");
+			infoText.setString("- There are even more meteorites\n- Increased fuel consumption\n- You're more fragile\n- Score increases faster");
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (difficulty == 1 || difficulty == 2){

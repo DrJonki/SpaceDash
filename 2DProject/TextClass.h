@@ -47,6 +47,8 @@ Space Dash - A student project created with SFML
 		void increaseHealth(const unsigned short amount);
 		void decreaseFuel(const unsigned short amount);
 		void increaseFuel(const unsigned short amount);
+
+		void resetBestScore();
 		
 		unsigned long bestScoreEasy;
 		unsigned long bestScoreMedium;
