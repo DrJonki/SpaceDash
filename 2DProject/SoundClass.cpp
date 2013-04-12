@@ -19,7 +19,7 @@ Space Dash - A student project created with SFML
 #include "SoundClass.h"
 
 
-SoundClass::SoundClass(void)
+SoundClass::SoundClass()
 {
 	srand(time(NULL));
 
@@ -28,7 +28,7 @@ SoundClass::SoundClass(void)
 
 	alarmSoundBuffer.loadFromFile("Resources/Audio/alarm.wav");
 	alarmSound.setBuffer(alarmSoundBuffer);
-	alarmSound.setVolume(75);
+	alarmSound.setVolume(80);
 	alarmSound.setPitch(1.4);
 
 	scoreSoundBuffer.loadFromFile("Resources/Audio/scoresound.wav");
@@ -45,45 +45,73 @@ SoundClass::SoundClass(void)
 	healSound.setBuffer(healSoundBuffer);
 	healSound.setVolume(99);
 	healSound.setPitch(1.2);
+
+	shutdownSoundBuffer.loadFromFile("Resources/Audio/shutdown.wav");
+	shutdownSound.setBuffer(shutdownSoundBuffer);
+	shutdownSound.setVolume(90);
+	shutdownSound.setPitch(0.9);
+
+	rocketSoundBuffer.loadFromFile("Resources/Audio/rocketsound.wav");
+	rocketSound.setBuffer(rocketSoundBuffer);
+	rocketSound.setVolume(90);
+
+	explosionSoundBuffer.loadFromFile("Resources/Audio/explosion.wav");
+	explosionSound.setBuffer(explosionSoundBuffer);
+	explosionSound.setVolume(80);
+
+	crashSoundBuffer.loadFromFile("Resources/Audio/crashsound.wav");
+	crashSound.setBuffer(crashSoundBuffer);
+	crashSound.setVolume(99);
+
+	/*explosionSoundBuffer2.loadFromFile("Resources/Audio/bang.wav");
+	explosionSound2.setBuffer(explosionSoundBuffer2);
+	explosionSound2.setVolume(90);*/
 }
-SoundClass::~SoundClass(void){}
+SoundClass::~SoundClass(){}
 
 
 void SoundClass::updateMusic()
 {
-	if (music.getVolume() < 75) music.setVolume(music.getVolume() + 1);
-	
-	int number = 1 + (int)rand()/((int)RAND_MAX/(8-(1)));
+	int number = 1 + (int)rand()/((int)RAND_MAX/(9-(1)));
 
-	if (music.getStatus() == sf::Music::Stopped && playMusic){
+	if (music.getStatus() == Music::Stopped && playMusic){
 
 		switch (number){
 			case 1:
 				music.openFromFile("Resources/Audio/music1.wav");
+				music.setVolume(70); //Set
 				break;
 			case 2:
 				music.openFromFile("Resources/Audio/music2.wav");
+				music.setVolume(75); //Set
 				break;
 			case 3:
 				music.openFromFile("Resources/Audio/music3.wav");
+				music.setVolume(45); //Set
 				break;
 			case 4:
 				music.openFromFile("Resources/Audio/music4.wav");
+				music.setVolume(37); //Set
 				break;
 			case 5:
 				music.openFromFile("Resources/Audio/music5.wav");
+				music.setVolume(57); //Set
 				break;
 			case 6:
 				music.openFromFile("Resources/Audio/music6.wav");
+				music.setVolume(47); //Set
 				break;
 			case 7:
 				music.openFromFile("Resources/Audio/music7.wav");
+				music.setVolume(37); //Set
 				break;
 			case 8:
-				music.openFromFile("Resources/Audio/music7.wav");
+				music.openFromFile("Resources/Audio/music8.wav");
+				music.setVolume(60); //Set
 				break;
 			default:
 				music.openFromFile("Resources/Audio/music7.wav");
+				music.setVolume(37); //Set
 				break;
 		}
 		music.play();
@@ -128,9 +156,57 @@ void SoundClass::playScoreSound()
 }
 void SoundClass::playFuelSound()
 {
-	if (playSound) fuelSound.play();
+	if (playSound){
+		fuelSound.play();
+		shutdownSound.stop();
+	}
 }
 void SoundClass::playHealSound()
 {
 	if (playSound) healSound.play();
+}
+void SoundClass::playShutdownSound()
+{
+	if (playSound) shutdownSound.play();
+}
+void SoundClass::playExplosionSound()
+{
+	if (playSound) explosionSound.play();
+}
+void SoundClass::stopExplosionSound()
+{
+	explosionSound.stop();
+}
+void SoundClass::playExplosionSound2()
+{
+	if (playSound) explosionSound2.play();
+}
+
+void SoundClass::updateRocketSound()
+{
+	if (rocketSound.getStatus() == Sound::Stopped && playSound){
+		rocketSound.play();
+	}
+
+	if (Keyboard::isKeyPressed(Keyboard::Space)){
+		rocketSound.setVolume(50);
+	}
+	else {
+		rocketSound.setVolume(20);
+	}
+}
+void SoundClass::stopRocketSound()
+{
+	rocketSound.stop();
+}
+
+void SoundClass::updateCrashSound()
+{
+	if (crashSound.getStatus() == Sound::Stopped && playSound){
+		crashSound.play();
+	}
+}
+void SoundClass::stopCrashSound()
+{
+	crashSound.stop();
 }

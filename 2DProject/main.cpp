@@ -17,7 +17,6 @@ Space Dash - A student project created with SFML
 */
 
 #include "Player.h"
-#include "MenuClass.h"
 
 #include <SFML/System.hpp>
 
@@ -34,8 +33,8 @@ namespace
 }
 
 //Function protos
-bool init(bool initBackgroundAndBorders, bool resetScore);
-bool deInit(bool quit);
+void init(const bool initBackgroundAndBorders, const bool resetScore);
+void deInit(const bool quit);
 void update();
 void render();
 void network();
@@ -81,7 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 }
 
 
-bool init(bool initBackgroundAndBorders, bool resetScore)
+void init(const bool initBackgroundAndBorders, const bool resetScore)
 {
 	//Set the seed for randomizer
 	object->setRandomSeed(time(NULL));
@@ -106,17 +105,13 @@ bool init(bool initBackgroundAndBorders, bool resetScore)
 
 	//Meters
 	object->initMeters();
-
-	return 1;
 }
 
-bool deInit(bool quit){
+void deInit(const bool quit){
 	object->stopMusic();
 	object->writeScoreToFile();
 	delete object;
 	if (!quit) object = new Player;
-
-	return 1;
 }
 
 
@@ -127,9 +122,9 @@ void update()
 
 	while (!object->getExitState()){
 
-		if (Keyboard::isKeyPressed(Keyboard::Escape) || gamePaused){
+		if ((Keyboard::isKeyPressed(Keyboard::Escape) && !object->getExplosionState()) || gamePaused){
 			gamePaused = true;
-			while (Keyboard::isKeyPressed(Keyboard::Escape) || Keyboard::isKeyPressed(Keyboard::R)){
+			while (Keyboard::isKeyPressed(Keyboard::Escape) || Keyboard::isKeyPressed(Keyboard::R) || Keyboard::isKeyPressed(Keyboard::Space)){
 				if (firstInit){
 					object->updateBackground();
 					object->updateBorders();
@@ -149,8 +144,7 @@ void update()
 
 			}while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::R) && !Keyboard::isKeyPressed(Keyboard::Escape));
 
-			if (Keyboard::isKeyPressed(Keyboard::Space));
-			else if (Keyboard::isKeyPressed(Keyboard::Escape)) object->setExitState(true);
+			if (Keyboard::isKeyPressed(Keyboard::Escape)) object->setExitState(true);
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::R)){
@@ -174,14 +168,14 @@ void update()
 			object->updateMeters();
 			object->updateText();
 			object->updateMusic();
+			object->bonusCollisionCheck();
 
 			render();
 
 			time = clock.getElapsedTime();
 			sleep(milliseconds(14 - time.asMilliseconds()));
 
-			if (object->getCrashState()){
-				sleep(milliseconds(750));
+			if (object->getCrashState() && !object->getExplosionState()){
 				init(0, 1);
 				gamePaused = true;
 				firstInit = true;
@@ -211,9 +205,9 @@ void render()
 	object->drawBonusObjects(gameWindow);
 
 	//Player
-	if (!object->getCrashState()) object->drawPlayer(gameWindow);
+	if (!object->getCrashState() && !object->getExplosionState()) object->drawPlayer(gameWindow);
 	//Flames
-	if (!object->getCrashState()) object->drawFlames(gameWindow, gamePaused && firstInit);
+	if (!object->getCrashState() && !object->getExplosionState()) object->drawFlames(gameWindow, gamePaused && firstInit);
 
 	//Crash debris
 	object->drawCrashDebris(gameWindow);
@@ -225,10 +219,16 @@ void render()
 	//Text
 	object->drawText(gameWindow);
 
-	if (gamePaused) object->drawPauseText(gameWindow);
+	if (gamePaused || object->getExplosionState()) object->drawPauseText(gameWindow, object->getExplosionState());
 
 	while (gameWindow.pollEvent(e)){
 		if (e.type == Event::LostFocus) gamePaused = true;
+		if (Keyboard::isKeyPressed(Keyboard::M)){
+			if (e.type == Event::KeyPressed){
+				object->stopMusic();
+				object->updateMusic();
+			}
+		}
 	}
 			
 	gameWindow.popGLStates();

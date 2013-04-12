@@ -30,8 +30,8 @@ Space Dash - A student project created with SFML
 	class SoundClass : public Misc
 	{
 	public:
-		SoundClass(void);
-		~SoundClass(void);
+		SoundClass();
+		~SoundClass();
 
 		void updateMusic();
 		void stopMusic();
@@ -42,9 +42,19 @@ Space Dash - A student project created with SFML
 		void updateAlarmSound();
 		void stopAlarmSound();
 
+		void updateCrashSound();
+		void stopCrashSound();
+
 		void playScoreSound();
 		void playFuelSound();
 		void playHealSound();
+		void playShutdownSound();
+		void playExplosionSound();
+		void stopExplosionSound();
+		void playExplosionSound2();
+
+		void updateRocketSound();
+		void stopRocketSound();
 
 	private:
 		Music music;
@@ -61,6 +71,21 @@ Space Dash - A student project created with SFML
 
 		SoundBuffer healSoundBuffer;
 		Sound healSound;
+
+		SoundBuffer shutdownSoundBuffer;
+		Sound shutdownSound;
+
+		SoundBuffer rocketSoundBuffer;
+		Sound rocketSound;
+
+		SoundBuffer explosionSoundBuffer;
+		Sound explosionSound;
+
+		SoundBuffer explosionSoundBuffer2;
+		Sound explosionSound2;
+
+		SoundBuffer crashSoundBuffer;
+		Sound crashSound;
 	};
 //}
 

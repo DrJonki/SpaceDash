@@ -1,0 +1,44 @@
+Here are the licensing information for all the resource files.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+/Graphics
+All assets in the Graphics folder are copyrighted content of Joona "Jonki" Tiinanen. 
+These are free for personal use but YOU MAY NOT REDISTRIBUTE THEM, MODIFIED OR UNMODIFIED, IN ANY CASE WITHOUT PERMISSION. 
+IF YOU WISH TO USE ANY OF THE GRAPHICAL ASSETS IN YOUR OWN WORK, PLEASE ASK FOR A PERMISSION FIRST.
+
+joona_tiinanen@hotmail.com
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+/Audio
+music1 - "Anomaly Detected" by Machinimasound, machinimasound.com
+music2 - "Beyond the Stars" by Machinimasound, machinimasound.com
+music3 - "Digital Fortress" by Machinimasound, machinimasound.com
+music4 - "Infected Euphoria" by Machinimasound, machinimasound.com
+music5 - "Lock & Load" by Machinimasound, machinimasound.com
+music6 - "Remember the Dreams" by Machinimasound, machinimasound.com
+music7 - "Streets of the Unknown" by Machinimasound, machinimasound.com
+music8 - "Setting Sail" by Machinimasound, machinimasound.com
+
+You can view the license for pieces from machinimasound.com at https://machinimasound.com/license
+
+
+menumusic - "Space Fighter Loop" by Kevin MacLeod, incompetech.com
+
+You can view the license for pieces from incompetech.com at http://incompetech.com/music/royalty-free/licenses/
+
+
+alarm - "alarms" by guitarguy1985, http://www.freesound.org/people/guitarguy1985/sounds/54048/
+fuelsound - "Shields1" by PhreaKsAccount, http://www.freesound.org/people/PhreaKsAccount/sounds/46492/
+healsound - "Socket Wrench" by TheGertz, http://www.freesound.org/people/TheGertz/sounds/131200/
+scoresound - "Success" by grunz, http://www.freesound.org/people/grunz/sounds/109662/
+shutdown - "stun" by RunnerPack, http://www.freesound.org/people/RunnerPack/sounds/87040/
+explosion - "Huge Explosion6" by CGEffex, http://www.freesound.org/people/CGEffex/sounds/93846/
+rocketsound - "Gas wird angezündet" by mwirth, http://www.freesound.org/people/mwirth/sounds/137174/
+            - "purrhagwan" by metamorphmuses, http://www.freesound.org/people/metamorphmuses/sounds/87586/
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+/Misc
+font - "Furore" by Jovanny Lemonad, http://www.fontsquirrel.com/license/Furore

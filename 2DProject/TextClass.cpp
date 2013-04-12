@@ -19,7 +19,7 @@ Space Dash - A student project created with SFML
 #include "TextClass.h"
 
 
-TextClass::TextClass(void)
+TextClass::TextClass()
 {
 	score = 0;
 	lastScore = 0;
@@ -45,7 +45,7 @@ TextClass::TextClass(void)
 		MessageBox(NULL, L"Failed to load font!", L"Error", MB_OK );
 	}
 }
-TextClass::~TextClass(void){}
+TextClass::~TextClass(){}
 
 void TextClass::initScoreText()
 {
@@ -69,12 +69,12 @@ void TextClass::initScoreText()
 	healthText.setFont(defaultFont);
 	healthText.setCharacterSize(26);
 	healthText.setColor(Color::Color(0, 255, 0));
-	healthText.setPosition(520 + (playerHealth * 2), 63);
+	healthText.setPosition(560 + (playerHealth * 2), 63);
 
 	fuelText.setFont(defaultFont);
 	fuelText.setCharacterSize(26);
 	fuelText.setColor(Color::Color(0, 255, 0));
-	fuelText.setPosition(520 + (playerHealth * 2), 114);
+	fuelText.setPosition(560 + (playerFuel * 2), 114);
 
 	//Score
 	scoreText.setFont(defaultFont);
@@ -110,6 +110,19 @@ void TextClass::initScoreText()
 	infoText.setColor(Color::Cyan);
 	infoText.setPosition(50, pauseText[0].getPosition().y + 23);
 
+	additionText[0].setPosition((scoreText.getPosition().x + scoreText.getGlobalBounds().width) + 5, scoreText.getPosition().y);
+	additionText[0].setFont(defaultFont);
+	additionText[0].setColor(Color::Transparent);
+	additionText[0].setCharacterSize(26);
+	additionText[1].setPosition((healthText.getPosition().x + healthText.getGlobalBounds().width) + 5, healthText.getPosition().y);
+	additionText[1].setFont(defaultFont);
+	additionText[1].setColor(Color::Transparent);
+	additionText[1].setCharacterSize(26);
+	additionText[2].setPosition((fuelText.getPosition().x + fuelText.getGlobalBounds().width) + 5, fuelText.getPosition().y);
+	additionText[2].setFont(defaultFont);
+	additionText[2].setColor(Color::Transparent);
+	additionText[2].setCharacterSize(26);
+	
 	updateText();
 
 	firstInit = false;
@@ -123,6 +136,29 @@ void TextClass::resetBestScore(){
 	bestScoreEasyHC = 0;
 	bestScoreMediumHC = 0;
 	bestScoreHardHC = 0;
+}
+
+void TextClass::resetAdditionText(unsigned long number, unsigned short selection)
+{
+	std::stringstream ss;
+
+	ss << "+" << number;
+
+	if (selection == 0){
+		additionText[0].setPosition((scoreText.getPosition().x + scoreText.getGlobalBounds().width) + 5, scoreText.getPosition().y);
+		additionText[0].setColor(Color::Cyan);
+		additionText[0].setString(ss.str());
+	}
+	else if (selection == 1){
+		additionText[1].setPosition(605 + (playerHealth * 2), healthText.getPosition().y);
+		additionText[1].setColor(Color::Green);
+		additionText[1].setString(ss.str());
+	}
+	else if (selection == 2){
+		additionText[2].setPosition(605 + (playerFuel * 2), fuelText.getPosition().y);
+		additionText[2].setColor(Color::Green);
+		additionText[2].setString(ss.str());
+	}
 }
 
 void TextClass::updateText()
@@ -140,7 +176,7 @@ void TextClass::updateText()
 	float tempHealth = playerHealth * 2.55;
 	healthText.setColor(Color::Color(255 - tempHealth, tempHealth, 0));
 
-	healthText.setPosition(520 + (playerHealth * 2), 63);
+	healthText.setPosition(560 + (playerHealth * 2), 63);
 
 	if (healthWarningCounter <= 5 && playerHealth <= 10) healthText.setColor(Color::Color(236, 20, 20));
 	else if(healthWarningCounter > 5 && healthWarningCounter <= 10 && playerHealth <= 10) healthText.setColor(Color::Color(238, 232, 67));
@@ -162,15 +198,15 @@ void TextClass::updateText()
 	float tempFuel = playerFuel * 2.55;
 	fuelText.setColor(Color::Color(255 - tempFuel, tempFuel, 0));
 	
-	if (hardcore) fuelText.setPosition(520 + (playerFuel * 2), 70);
-	else fuelText.setPosition(520 + (playerFuel * 2), 114);
+	if (hardcore) fuelText.setPosition(560 + (playerFuel * 2), 70);
+	else fuelText.setPosition(560 + (playerFuel * 2), 114);
 
 	if (fuelWarningCounter <= 5 && playerFuel <= 10) fuelText.setColor(Color::Color(236, 20, 20));
 	else if(fuelWarningCounter > 5 && fuelWarningCounter <= 10 && playerFuel <= 10) fuelText.setColor(Color::Color(238, 232, 67));
 
 
 	//Score
-	score += (difficulty * (hardcore + 1));
+	if (!getExplosionState()) score += (difficulty * (hardcore + 1));
 	ss.str("");
 	ss << "Current score: " << score / 10;
 	scoreText.setString(ss.str());
@@ -192,10 +228,28 @@ void TextClass::updateText()
 	if (fuelWarningCounter >= 10) fuelWarningCounter = 0;
 	if (healthWarningCounter >= 10) healthWarningCounter = 0;
 
-	if (playerHealth <= 10 || playerFuel <= 10) updateAlarmSound();
+	if ((playerHealth <= 10 || playerFuel <= 10) && !getExplosionState()) updateAlarmSound();
 	else stopAlarmSound();
 
+	for (int i = 0; i < 3; i++){
+		if (additionText[i].getColor().a > 0){
+			additionText[i].move(0.5, 0);
+			if (additionText[i].getColor().a > 2){
+				additionText[i].setColor(Color::Color(additionText[i].getColor().r, additionText[i].getColor().g, additionText[i].getColor().b, additionText[i].getColor().a - 3));
+			}
+			else if (additionText[i].getColor().a <= 2){
+				additionText[i].setColor(Color::Color(additionText[i].getColor().r, additionText[i].getColor().g, additionText[i].getColor().b, additionText[i].getColor().a - 1));
+			}
+		}
+	}
+
 	glFlush();
+}
+
+void TextClass::updateExplosionText()
+{
+	pauseText[0].setString("You died!");
+	pauseText[1].setString("Space/R - Restart\nEscape - Exit");
 }
 
 void TextClass::drawText(RenderWindow &window)
@@ -205,12 +259,17 @@ void TextClass::drawText(RenderWindow &window)
 	window.draw(bestScoreText);
 	if (!hardcore) window.draw(healthText);
 	window.draw(fuelText);
+
+	for (int i = 0; i < 3; i++){
+		window.draw(additionText[i]);
+	}
 }
-void TextClass::drawPauseText(RenderWindow &window)
+void TextClass::drawPauseText(RenderWindow &window, bool explosion)
 {
 	window.draw(pauseText[0]);
 	window.draw(pauseText[1]);
-	window.draw(infoText);
+
+	if (!explosion) window.draw(infoText);
 }
 
 void TextClass::addToScore(int scoreAdd)

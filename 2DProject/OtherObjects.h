@@ -27,8 +27,8 @@ Space Dash - A student project created with SFML
 	{
 	public:
 
-		OtherObjects(void);
-		~OtherObjects(void);
+		OtherObjects();
+		~OtherObjects();
 
 		//Background
 		void initBackground();
@@ -65,7 +65,7 @@ Space Dash - A student project created with SFML
 		//Resoures
 		static const int numberOfStars = 300;
 		RectangleShape backgroundStar[numberOfStars];
-		int starSpeed[numberOfStars];
+		float starSpeed[numberOfStars];
 
 		Texture debrisTextureTop;
 		Texture debrisTextureBottom;

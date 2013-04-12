@@ -19,12 +19,13 @@ Space Dash - A student project created with SFML
 #include "Misc.h"
 
 
-Misc::Misc(void)
+Misc::Misc()
 {
+	explosionState = false;
 	crashState = false;
 	exitState = false;
 }
-Misc::~Misc(void){}
+Misc::~Misc(){}
 
 
 void Misc::setRandomSeed(int seed)
@@ -61,11 +62,19 @@ bool Misc::spriteCollision(sf::Sprite *object1, sf::Sprite *object2)
 }
 
 
+void Misc::setExplosionState(bool state)
+{
+	explosionState = state;
+}
+bool Misc::getExplosionState()
+{
+	return explosionState;
+}
+
 void Misc::setCrashState(bool state)
 {
 	crashState = state;
 }
-
 bool Misc::getCrashState()
 {
 	return crashState;
@@ -75,7 +84,6 @@ void Misc::setExitState(bool state)
 {
 	exitState = state;
 }
-
 bool Misc::getExitState()
 {
 	return exitState;
@@ -106,23 +114,27 @@ void Misc::readSettingsFromFile()
 				std::getline(file, string);
 				vSync = std::atoi(string.c_str());
 			}
-			else if (count == 1){ //Difficulty
-				std::getline(file, string);
-				difficulty = std::atoi(string.c_str());
-			}
-			else if (count == 2){ //Hardcore
-				std::getline(file, string);
-				hardcore = std::atoi(string.c_str());
-			}
-			else if (count == 3){ //Show particles
+			if (count == 1){ //vSync
 				std::getline(file, string);
 				showParticles = std::atoi(string.c_str());
 			}
-			else if (count == 4){ //Play sound
+			else if (count == 2){ //Difficulty
+				std::getline(file, string);
+				difficulty = std::atoi(string.c_str());
+			}
+			else if (count == 3){ //Hardcore
+				std::getline(file, string);
+				hardcore = std::atoi(string.c_str());
+			}
+			else if (count == 4){ //Show particles
+				std::getline(file, string);
+				showParticles = std::atoi(string.c_str());
+			}
+			else if (count == 5){ //Play sound
 				std::getline(file, string);
 				playSound = std::atoi(string.c_str());
 			}
-			else if (count == 5){ //Play music
+			else if (count == 6){ //Play music
 				std::getline(file, string);
 				playMusic = std::atoi(string.c_str());
 			}
@@ -138,6 +150,7 @@ void Misc::writeSettingsToFile()
 	std::ofstream file;
 	file.open(path);
 	file << vSync << std::endl;	//vSync
+	file << showParticles << std::endl;
 	file << difficulty << std::endl;	//Difficulty
 	file << hardcore << std::endl;		//HardCore
 	file << showParticles << std::endl; //Show particles

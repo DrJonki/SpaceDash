@@ -22,7 +22,7 @@ namespace{
 	Event e;
 }
 
-MenuClass::MenuClass(void)
+MenuClass::MenuClass()
 {
 	minimized = false;
 
@@ -47,7 +47,7 @@ MenuClass::MenuClass(void)
 		MessageBox(NULL, L"Failed to load font!", L"Error", MB_OK );
 	}
 }
-MenuClass::~MenuClass(void){}
+MenuClass::~MenuClass(){}
 
 bool MenuClass::showMenu()
 {
@@ -75,6 +75,7 @@ bool MenuClass::showMenu()
 			updateGraphics(menuWindow);
 			drawGraphics(menuWindow);
 			infoText.setString("");
+			infoBackground.setSize(Vector2f(0, 0));
 		
 			
 			if (Keyboard::isKeyPressed(Keyboard::Space) || (Mouse::isButtonPressed(Mouse::Left) && mouseIsOnButton(menuWindow, &playButtonText))){
@@ -158,6 +159,9 @@ void MenuClass::initGraphics(RenderWindow &menuWindow, bool firstInit)
 	infoText.setColor(Color::Color(255, 128, 0));
 	infoText.setCharacterSize(13);
 	infoText.setString("");
+
+	infoBackground.setSize(Vector2f(0, 0));
+	infoBackground.setFillColor(Color::Black);
 
 	if (firstInit){
 		for (int i = 0; i < numberOfStars; i++){
@@ -262,6 +266,7 @@ void MenuClass::updateGraphics(RenderWindow &menuWindow)
 	}
 
 	infoText.setPosition(Mouse::getPosition(menuWindow).x + 50, Mouse::getPosition(menuWindow).y);
+	infoBackground.setPosition(Mouse::getPosition(menuWindow).x + 45, Mouse::getPosition(menuWindow).y);
 	
 
 	if (mouseIsOnButton(menuWindow, &playButtonText)) playButtonText.setColor(Color::Color(255, 255, 0));
@@ -373,6 +378,12 @@ void MenuClass::scoreMenu(RenderWindow &window, bool init)
 		scoreText[0].setCharacterSize(40);
 		scoreText[0].setString("High Scores");
 
+		resetText.setPosition(50, 300);
+		resetText.setFont(defaultFont);
+		resetText.setColor(Color::Cyan);
+		resetText.setCharacterSize(20);
+		resetText.setString("Reset scores");
+
 		
 		ss.str("");
 		ss << "Easy << " << bestScoreEasy / 10;
@@ -418,12 +429,31 @@ void MenuClass::scoreMenu(RenderWindow &window, bool init)
 		scoreText[6].setString(ss.str());
 	}
 
-	if (!init){
-		for (int i = 0; i < 7; i++) window.draw(scoreText[i]);
-		window.draw(infoText);
+	if (mouseIsOnButton(window, &resetText)){
+		resetText.setColor(Color::Yellow);
+		infoText.setString("Reset all scores");
+		infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
+		while (window.pollEvent(e)){
+			if (e.type == Event::MouseButtonPressed){
+				resetBestScore();
+				writeScoreToFile();
+				scoreMenu(window, 1);
+			}
+		}
+	}
+	else{
+		resetText.setColor(Color::Cyan);
+		infoText.setString("");
+		infoBackground.setSize(Vector2f(0, 0));
+		while (window.pollEvent(e));
 	}
 
-	while (window.pollEvent(e));
+	if (!init){
+		for (int i = 0; i < 7; i++) window.draw(scoreText[i]);
+		window.draw(resetText);
+		window.draw(infoBackground);
+		window.draw(infoText);
+	}
 }
 void MenuClass::optionsMenu(RenderWindow &window, bool init)
 {
@@ -435,9 +465,9 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 		optionsText[0].setString("OPTIONS");
 
 		//Vsync
-		optionsText[1].setPosition(50, 100);
+		optionsText[1].setPosition(50, 75);
 		optionsText[1].setFont(defaultFont);
-		optionsText[1].setCharacterSize(20);
+		optionsText[1].setCharacterSize(16);
 		if (vSync){
 			optionsText[1].setColor(Color::Yellow);
 			optionsText[1].setString("V-Sync (ON)");
@@ -446,77 +476,89 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[1].setColor(Color::Cyan);
 			optionsText[1].setString("V-Sync (OFF)");
 		}
-		//Sounds
-		optionsText[2].setPosition(50, optionsText[1].getPosition().y + 35);
+		//Particles
+		optionsText[2].setPosition(50, optionsText[1].getPosition().y + 25);
 		optionsText[2].setFont(defaultFont);
-		optionsText[2].setCharacterSize(20);
-		if (playSound){
+		optionsText[2].setCharacterSize(16);
+		if (showParticles){
 			optionsText[2].setColor(Color::Yellow);
-			optionsText[2].setString("Sound (ON)");
+			optionsText[2].setString("Particles (ON)");
 		}
 		else{
 			optionsText[2].setColor(Color::Cyan);
-			optionsText[2].setString("Sound (OFF)");
+			optionsText[2].setString("Particles (OFF)");
 		}
-		//Music
-		optionsText[3].setPosition(50, optionsText[2].getPosition().y + 25);
+		//Sounds
+		optionsText[3].setPosition(50, optionsText[2].getPosition().y + 35);
 		optionsText[3].setFont(defaultFont);
-		optionsText[3].setCharacterSize(20);
-		if (playMusic){
+		optionsText[3].setCharacterSize(16);
+		if (playSound){
 			optionsText[3].setColor(Color::Yellow);
-			optionsText[3].setString("Music (ON)");
+			optionsText[3].setString("Sound (ON)");
 		}
 		else{
 			optionsText[3].setColor(Color::Cyan);
-			optionsText[3].setString("Music (OFF)");
+			optionsText[3].setString("Sound (OFF)");
+		}
+		//Music
+		optionsText[4].setPosition(50, optionsText[3].getPosition().y + 25);
+		optionsText[4].setFont(defaultFont);
+		optionsText[4].setCharacterSize(16);
+		if (playMusic){
+			optionsText[4].setColor(Color::Yellow);
+			optionsText[4].setString("Music (ON)");
+		}
+		else{
+			optionsText[4].setColor(Color::Cyan);
+			optionsText[4].setString("Music (OFF)");
 		}
 		//Easy
-		optionsText[4].setPosition(50,  optionsText[3].getPosition().y + 50);
-		optionsText[4].setFont(defaultFont);
-		optionsText[4].setCharacterSize(20);
+		optionsText[5].setPosition(50,  optionsText[4].getPosition().y + 50);
+		optionsText[5].setFont(defaultFont);
+		optionsText[5].setCharacterSize(16);
 		if (difficulty == 1){
-			optionsText[4].setColor(Color::Green);
-			optionsText[4].setString("Easy <--");
+			optionsText[5].setColor(Color::Green);
+			optionsText[5].setString("Easy <--");
 		}
 		else{
-			optionsText[4].setColor(Color::Green);
-			optionsText[4].setString("Easy");
+			optionsText[5].setColor(Color::Green);
+			optionsText[5].setString("Easy");
 		}
 		//Medium
-		optionsText[5].setPosition(50, optionsText[4].getPosition().y + 25);
-		optionsText[5].setFont(defaultFont);
-		optionsText[5].setCharacterSize(20);
+		optionsText[6].setPosition(50, optionsText[5].getPosition().y + 25);
+		optionsText[6].setFont(defaultFont);
+		optionsText[6].setCharacterSize(16);
 		if (difficulty == 2){
-			optionsText[5].setColor(Color::Yellow);
-			optionsText[5].setString("Medium <--");
+			optionsText[6].setColor(Color::Yellow);
+			optionsText[6].setString("Medium <--");
 		}
 		else{
-			optionsText[5].setColor(Color::Yellow);
-			optionsText[5].setString("Medium");
+			optionsText[6].setColor(Color::Yellow);
+			optionsText[6].setString("Medium");
 		}
 		//Hard
-		optionsText[6].setPosition(50,  optionsText[5].getPosition().y + 25);
-		optionsText[6].setFont(defaultFont);
-		optionsText[6].setCharacterSize(20);
+		optionsText[7].setPosition(50,  optionsText[6].getPosition().y + 25);
+		optionsText[7].setFont(defaultFont);
+		optionsText[7].setCharacterSize(16);
 		if (difficulty == 3){
-			optionsText[6].setColor(Color::Red);
-			optionsText[6].setString("Hard <--");
+			optionsText[7].setColor(Color::Red);
+			optionsText[7].setString("Hard <--");
 		}
 		else{
-			optionsText[6].setColor(Color::Red);
-			optionsText[6].setString("Hard");
+			optionsText[7].setColor(Color::Red);
+			optionsText[7].setString("Hard");
 		}
 		//Hardcore
-		optionsText[7].setPosition(50,  optionsText[6].getPosition().y + 35);
-		optionsText[7].setFont(defaultFont);
-		optionsText[7].setCharacterSize(20);
+		optionsText[8].setPosition(50,  optionsText[7].getPosition().y + 35);
+		optionsText[8].setFont(defaultFont);
+		optionsText[8].setCharacterSize(16);
 		if (hardcore){
-			optionsText[7].setColor(Color::Magenta);
-			optionsText[7].setString("Hardcore (ON)");
+			optionsText[8].setColor(Color::Magenta);
+			optionsText[8].setString("Hardcore (ON)");
 		}
 		else{
-			optionsText[7].setColor(Color::Cyan);
-			optionsText[7].setString("Hardcore (OFF)");
+			optionsText[8].setColor(Color::Cyan);
+			optionsText[8].setString("Hardcore (OFF)");
 		}
 	}
 
@@ -526,6 +568,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 		//Vsync
 		if (mouseIsOnButton(window, &optionsText[1])){
 			infoText.setString("Enable/disable vertical\nsynchronization");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (vSync){
@@ -542,103 +585,128 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 				}
 			}
 		}
-		//Sound
 		if (mouseIsOnButton(window, &optionsText[2])){
+			infoText.setString("Enable/disable particle effects.\nPlease do not disable\nunless having problems");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
+			while (window.pollEvent(e)){
+				if (e.type == Event::MouseButtonPressed){
+					if (showParticles){
+						showParticles = false;
+						optionsText[2].setColor(Color::Cyan);
+						optionsText[2].setString("Particles (OFF)");
+
+					}
+					else{
+						showParticles = true;
+						optionsText[2].setColor(Color::Yellow);
+						optionsText[2].setString("Particles (ON)");
+					}
+				}
+			}
+		}
+		//Sound
+		if (mouseIsOnButton(window, &optionsText[3])){
 			infoText.setString("Enable/disable sound");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (playSound){
 						playSound = false;
-						optionsText[2].setColor(Color::Cyan);
-						optionsText[2].setString("Sound (OFF)");
+						optionsText[3].setColor(Color::Cyan);
+						optionsText[3].setString("Sound (OFF)");
 
 					}
 					else{
 						playSound = true;
-						optionsText[2].setColor(Color::Yellow);
-						optionsText[2].setString("Sound (ON)");
+						optionsText[3].setColor(Color::Yellow);
+						optionsText[3].setString("Sound (ON)");
 					}
 				}
 			}
 		}
 		//Music
-		if (mouseIsOnButton(window, &optionsText[3])){
+		if (mouseIsOnButton(window, &optionsText[4])){
 			infoText.setString("Enable/disable music");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (playMusic){
 						playMusic = false;
 						stopMenuMusic();
-						optionsText[3].setColor(Color::Cyan);
-						optionsText[3].setString("Music (OFF)");
+						optionsText[4].setColor(Color::Cyan);
+						optionsText[4].setString("Music (OFF)");
 
 					}
 					else{
 						playMusic = true;
 						updateMenuMusic();
-						optionsText[3].setColor(Color::Yellow);
-						optionsText[3].setString("Music (ON)");
+						optionsText[4].setColor(Color::Yellow);
+						optionsText[4].setString("Music (ON)");
 					}
 				}
 			}
 		}
 		//Easy
-		if (mouseIsOnButton(window, &optionsText[4])){
-			infoText.setString("- Standard number of meteorites\n- Standard fuel consumption\n- You're not that fragile\n- Standard score gain");
+		if (mouseIsOnButton(window, &optionsText[5])){
+			infoText.setString("- Standard number of asteroids\n- Standard fuel consumption\n- You're not that fragile\n- Standard score gain");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (difficulty == 2 || difficulty == 3){
 						difficulty = 1;
-						optionsText[4].setString("Easy <--");
-						optionsText[5].setString("Medium");
-						optionsText[6].setString("Hard");
+						optionsText[5].setString("Easy <--");
+						optionsText[6].setString("Medium");
+						optionsText[7].setString("Hard");
 					}
 				}
 			}
 		}
 		//Medium
-		if (mouseIsOnButton(window, &optionsText[5])){
-			infoText.setString("- There are more meteorites\n- Increased fuel consumption\n- You're more fragile\n- Score increases faster");
+		if (mouseIsOnButton(window, &optionsText[6])){
+			infoText.setString("- There are more asteroids\n- Increased fuel consumption\n- You're more fragile\n- Score increases faster");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (difficulty == 1 || difficulty == 3){
 						difficulty = 2;
-						optionsText[4].setString("Easy");
-						optionsText[5].setString("Medium <--");
-						optionsText[6].setString("Hard");
+						optionsText[5].setString("Easy");
+						optionsText[6].setString("Medium <--");
+						optionsText[7].setString("Hard");
 					}
 				}
 			}
 		}
 		//Hard
-		if (mouseIsOnButton(window, &optionsText[6])){
-			infoText.setString("- There are even more meteorites\n- Increased fuel consumption\n- You're more fragile\n- Score increases faster");
+		if (mouseIsOnButton(window, &optionsText[7])){
+			infoText.setString("- There are even more asteroids\n- Increased fuel consumption\n- You're more fragile\n- Score increases faster");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (difficulty == 1 || difficulty == 2){
 						difficulty = 3;
-						optionsText[4].setString("Easy");
-						optionsText[5].setString("Medium");
-						optionsText[6].setString("Hard <--");
+						optionsText[5].setString("Easy");
+						optionsText[6].setString("Medium");
+						optionsText[7].setString("Hard <--");
 					}
 				}
 			}
 		}
 		//Hardcore
-		if (mouseIsOnButton(window, &optionsText[7])){
+		if (mouseIsOnButton(window, &optionsText[8])){
 			infoText.setString("In hardcore mode\nyou'll die from\na single hit.\nScore gain is doubled.");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
 			while (window.pollEvent(e)){
 				if (e.type == Event::MouseButtonPressed){
 					if (hardcore){
 						hardcore = false;
-						optionsText[7].setColor(Color::Cyan);
-						optionsText[7].setString("Hardcore (OFF)");
+						optionsText[8].setColor(Color::Cyan);
+						optionsText[8].setString("Hardcore (OFF)");
 
 					}
 					else{
 						hardcore = true;
-						optionsText[7].setColor(Color::Magenta);
-						optionsText[7].setString("Hardcore (ON)");
+						optionsText[8].setColor(Color::Magenta);
+						optionsText[8].setString("Hardcore (ON)");
 					}
 				}
 			}
@@ -648,7 +716,8 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			else if (e.type == Event::GainedFocus) minimized = false;
 		}
 
-		for (int i = 0; i < 8; i++) window.draw(optionsText[i]);
+		for (int i = 0; i < 9; i++) window.draw(optionsText[i]);
+		window.draw(infoBackground);
 		window.draw(infoText);
 	}
 }
@@ -663,20 +732,24 @@ void MenuClass::creditsMenu(RenderWindow &window, bool init)
 
 		std::stringstream ss;
 		ss << "Creator\n";
-		ss << "    Joona \"Jonki\" Tiinanen\n\n";
+		ss << "    Joona \"Jonki\" Tiinanen\n\n\n\n";
 		ss << "Programming\n";
-		ss << "    Joona \"Jonki\" Tiinanen\n\n";
+		ss << "    Joona \"Jonki\" Tiinanen\n\n\n\n";
 		ss << "Art\n";
-		ss << "    Joona \"Jonki\" Tiinanen\n\n";
+		ss << "    Joona \"Jonki\" Tiinanen\n\n\n\n";
 		ss << "Music\n";
-		ss << "    Machinima Sound\n    Kevin MacLeod\n\n";
+		ss << "    Machinima Sound\n\n    Kevin MacLeod\n\n\n\n";
 		ss << "Sound\n";
-		ss << "    \n    \n\n\n";
+		ss << "    Several pieces from\n    Freesound.org\n\n\n\n";
+		ss << "\"Furore\" Font\n";
+		ss << "    Jovanny Lemonad\n\n\n\n\n";
 		ss << "Special thanks!\n";
-		ss << "    Ilari \"Ilgoth\" Nikkarikoski\n";
-		ss << "    Nooobody\n";
-		ss << "    Students and teachers\n";
-		ss << "    of Kajaani UAS\n";
+		ss << "    Ilari \"Ilgoth\" Nikkarikoski\n\n";
+		ss << "    Nooobody\n\n";
+		ss << "    Laurent Gomila, the\n";
+		ss << "    creator of SFML\n\n";
+		ss << "    Students and staff\n";
+		ss << "    of Kajaani UAS";
 
 		creditsText[1].setPosition(25, creditsText[0].getPosition().y + 50);
 		creditsText[1].setFont(defaultFont);
@@ -687,13 +760,14 @@ void MenuClass::creditsMenu(RenderWindow &window, bool init)
 
 	if (!init){
 		creditsText[0].move(0, -0.5);
-		creditsText[1].setPosition(25, creditsText[0].getPosition().y + 50);
+		creditsText[1].setPosition(50, creditsText[0].getPosition().y + 75);
 
 		window.draw(creditsText[0]);
 		window.draw(creditsText[1]);
+		window.draw(infoBackground);
 		window.draw(infoText);
 
-		if (creditsText[0].getPosition().y < -480){
+		if (creditsText[1].getPosition().y + creditsText[1].getGlobalBounds().height < -5){
 			inSubMenu = false;
 			inCreditsMenu = false;
 			initGraphics(window, 0);

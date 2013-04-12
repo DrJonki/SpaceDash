@@ -24,8 +24,8 @@ Space Dash - A student project created with SFML
 class MenuClass : public TextClass
 {
 public:
-	MenuClass(void);
-	~MenuClass(void);
+	MenuClass();
+	~MenuClass();
 
 	bool showMenu();
 
@@ -44,6 +44,7 @@ private:
 
 	//Text stuff
 	Font defaultFont;
+	RectangleShape infoBackground;
 	//Main menu text
 	Text playButtonText;
 	Text exitButtonText;
@@ -53,9 +54,10 @@ private:
 	Text backButtonText;
 	//Sub menu texts
 	Text scoreText[7];
-	Text optionsText[8];
+	Text optionsText[9];
 	Text creditsText[2];
 	Text infoText;
+	Text resetText;
 
 
 	//Movement logic

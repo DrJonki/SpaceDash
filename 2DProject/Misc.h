@@ -36,10 +36,13 @@ using namespace sf;
 	class Misc
 	{
 	public:
-		Misc(void);
-		~Misc(void);
+		Misc();
+		~Misc();
 
 		void setRandomSeed(int seed);
+
+		void setExplosionState(bool state);
+		bool getExplosionState();
 
 		void setCrashState(bool state);
 		bool getCrashState();
@@ -67,6 +70,7 @@ using namespace sf;
 		bool playMusic;
 
 	private:
+		bool explosionState;
 		bool crashState;
 		bool exitState;
 

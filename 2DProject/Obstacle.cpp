@@ -19,22 +19,17 @@ Space Dash - A student project created with SFML
 #include "Obstacle.h"
 
 
-Obstacle::Obstacle(void)
+Obstacle::Obstacle()
+	: obstacleBaseSpeed(8),
+	  obstacleRadiusMin(25),
+	  obstacleRadiusMax(50)
 {
-	obstacleBaseSpeed = 8;
-	obstacleRadiusMin = 25;
-	obstacleRadiusMax = 50;
-
 	if (!obstacleTexture.loadFromFile("Resources/Graphics/debris_0.png")){
 		setExitState(true);
 		MessageBox(NULL, L"Failed to load obstacle texture!", L"Error", MB_OK );
 	}
 }
-
-
-Obstacle::~Obstacle(void)
-{
-}
+Obstacle::~Obstacle(){}
 
 void Obstacle::initObstacles()
 {
@@ -45,7 +40,7 @@ void Obstacle::initObstacles()
 
 	for (int i = 0; i < numberOfObstacles; i++){
 		obstacle.push_back(CircleShape());
-		obstacleSpeedMod.push_back(getRandom(-3.0f, 3.0f));
+		obstacleSpeedMod.push_back(Vector2f(getRandom(-3.0f, 3.0f), getRandom(-0.6f, 0.6f)));
 	}
 
 	//Init obstacle objects
@@ -64,12 +59,12 @@ void Obstacle::updateObstacles()
 {	
 	//Obstacle movement
 	for (int i=0; i<numberOfObstacles; i++){
-		obstacle[i].move(-(obstacleBaseSpeed + obstacleSpeedMod[i]), 0);
+		obstacle[i].move(-(obstacleBaseSpeed + obstacleSpeedMod[i].x), obstacleSpeedMod[i].y);
 		
 		if (i % 2 == 0) obstacle[i].rotate(1);
 		else obstacle[i].rotate(-1);
 		
-		if (obstacle[i].getPosition().x < -100){
+		if (obstacle[i].getPosition().x < -100 || obstacle[i].getPosition().y < -100 || obstacle[i].getPosition().y > 1300){
 			float ramNum = getRandom(obstacleRadiusMin, obstacleRadiusMax);
 			obstacle[i].setRadius(ramNum);
 			obstacle[i].setOrigin(ramNum, ramNum);

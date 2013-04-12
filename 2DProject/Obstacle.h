@@ -24,8 +24,8 @@ Space Dash - A student project created with SFML
 class Obstacle : public MenuClass
 {
 public:
-	Obstacle(void);
-	~Obstacle(void);
+	Obstacle();
+	~Obstacle();
 
 	void initObstacles();
 	void updateObstacles();
@@ -40,11 +40,11 @@ private:
 	
 	int numberOfObstacles;
 	std::vector<CircleShape> obstacle;
-	std::vector<int> obstacleSpeedMod;
-	float obstacleRadiusMin;
-	float obstacleRadiusMax;
+	std::vector<Vector2f> obstacleSpeedMod;
+	const float obstacleRadiusMin;
+	const float obstacleRadiusMax;
 
-	double obstacleBaseSpeed;
+	const double obstacleBaseSpeed;
 };
 
 #endif

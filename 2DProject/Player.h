@@ -27,41 +27,48 @@ Space Dash - A student project created with SFML
 	class Player : public OtherObjects
 	{
 	public:
-		Player(void);
-		~Player(void);
+		Player();
+		~Player();
 
 		//Player
 		void initPlayer();
 		void updatePlayer();
 		void updateFlamesPaused();
-		void drawPlayer(sf::RenderWindow &window);
+		void drawPlayer(RenderWindow &window);
 
 		//Flames
-		void drawFlames(sf::RenderWindow &window, bool paused); 
+		void drawFlames(RenderWindow &window, bool paused); 
 
 		void drawCrashDebris(RenderWindow &window);
 		void drawDamageParticles(RenderWindow &window);
 
+		void bonusCollisionCheck();
+
 	private:
 		std::vector<CircleShape> damageParticle;
+		std::vector<Vector2f> damageParticleSpeed;
+		std::vector<CircleShape> damageParticle2;
+		std::vector<Vector2f> damageParticleSpeed2;
 
 		std::vector<RectangleShape> crashDebris;
-		std::vector<float> crashDebrisSpeed;
+		std::vector<Vector2f> crashDebrisSpeed;
+		std::vector<RectangleShape> crashDebris2;
+		std::vector<Vector2f> crashDebrisSpeed2;
 
-		sf::Texture playerTexture;
-		sf::Sprite playerSprite;
+		Texture playerTexture;
+		Sprite playerSprite;
 
 		CircleShape collisionCircle[3];
 
-		sf::Texture flameTexture;
-		sf::Sprite flameSpriteTop;
-		sf::Sprite flameSpriteBottom;
+		Texture flameTexture;
+		Sprite flameSpriteTop;
+		Sprite flameSpriteBottom;
 	
 		float playerRotation;
 		float playerSpeed;
 
-		float baseClimingSpeed;
-		float baseFallingSpeed;
+		const float baseClimingSpeed;
+		const float baseFallingSpeed;
 
 		int flameAnim;
 		float flameScale;
@@ -69,6 +76,11 @@ Space Dash - A student project created with SFML
 		bool animAscend;
 
 		bool drawCollisionShapes;
+
+		bool playedShutdownSound;
+		bool initExplosion;
+
+		float explosionSpeedCounter;
 	};
 //}
 

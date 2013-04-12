@@ -19,7 +19,7 @@ Space Dash - A student project created with SFML
 #include "OtherObjects.h"
 
 
-OtherObjects::OtherObjects(void)
+OtherObjects::OtherObjects()
 {
 	if (!debrisTextureTop.loadFromFile("Resources/Graphics/debrisfield_top.png")){
 		setExitState(true);
@@ -45,7 +45,7 @@ OtherObjects::OtherObjects(void)
 		MessageBox(NULL, L"Failed to load fuel icon texture!", L"Error", MB_OK );
 	}
 }
-OtherObjects::~OtherObjects(void){}
+OtherObjects::~OtherObjects(){}
 
 
 void OtherObjects::initBackground()
@@ -208,15 +208,15 @@ void OtherObjects::initMeters()
 	healthMeter.setSize(Vector2f(200, 25));
 	healthMeter.setFillColor(Color::Color(0, 255, 0));
 	healthMeter.setScale(1, 1);
-	healthMeter.setPosition(500, 68);
+	healthMeter.setPosition(540, 68);
 	healthIconSprite[0].setTexture(healthIconTexture);
 	healthIconSprite[0].setPosition(healthMeter.getPosition().x - 35, healthMeter.getPosition().y);
 
 	fuelMeter.setSize(Vector2f(200, 25));
 	fuelMeter.setFillColor(Color::Color(0, 255, 0));
 	fuelMeter.setScale(1, 1);
-	if (hardcore) fuelMeter.setPosition(500, 75);
-	else fuelMeter.setPosition(500, 118);
+	if (hardcore) fuelMeter.setPosition(540, 75);
+	else fuelMeter.setPosition(540, 118);
 	fuelIconSprite[0].setTexture(fuelIconTexture);
 	fuelIconSprite[0].setPosition(fuelMeter.getPosition().x - 35, fuelMeter.getPosition().y);
 }

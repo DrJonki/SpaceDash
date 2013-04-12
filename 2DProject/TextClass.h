@@ -29,16 +29,17 @@ Space Dash - A student project created with SFML
 	class TextClass : public SoundClass
 	{
 	public:
-		TextClass(void);
-		~TextClass(void);
+		TextClass();
+		~TextClass();
 
 		void initScoreText();
 		void readScoreFromFile();
 		void writeScoreToFile();
 
 		void updateText();
-		void drawText(sf::RenderWindow &window);
-		void drawPauseText(RenderWindow &window);
+		void updateExplosionText();
+		void drawText(RenderWindow &window);
+		void drawPauseText(RenderWindow &window, bool explosion);
 		void addToScore(int scoreAdd);
 
 		short getPlayerHealth();
@@ -49,6 +50,7 @@ Space Dash - A student project created with SFML
 		void increaseFuel(const unsigned short amount);
 
 		void resetBestScore();
+		void resetAdditionText(unsigned long number, unsigned short selection);
 		
 		unsigned long bestScoreEasy;
 		unsigned long bestScoreMedium;
@@ -58,13 +60,14 @@ Space Dash - A student project created with SFML
 		unsigned long bestScoreHardHC;
 
 	private:
-		sf::Font defaultFont;
-		sf::Text scoreText;
-		sf::Text lastScoreText;
-		sf::Text bestScoreText;
+		Font defaultFont;
+		Text scoreText;
+		Text lastScoreText;
+		Text bestScoreText;
 		Text initText;
 		Text healthText;
 		Text fuelText;
+		Text additionText[3];
 
 		Text pauseText[2];
 		Text infoText;
