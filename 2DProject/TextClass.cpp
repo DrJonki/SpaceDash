@@ -249,7 +249,7 @@ void TextClass::updateText()
 void TextClass::updateExplosionText()
 {
 	pauseText[0].setString("You died!");
-	pauseText[1].setString("Space/R - Restart\nEscape - Exit");
+	pauseText[1].setString("R - Restart\nEscape - Exit");
 }
 
 void TextClass::drawText(RenderWindow &window)

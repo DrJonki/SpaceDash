@@ -131,6 +131,7 @@ void update()
 					object->updateFlamesPaused();
 				}
 				render();
+				object->stopAlarmSound();
 				object->updateMusic();
 			}
 			do{
@@ -140,6 +141,7 @@ void update()
 					object->updateFlamesPaused();
 				}
 				render();
+				object->stopAlarmSound();
 				object->updateMusic();
 
 			}while (!Keyboard::isKeyPressed(Keyboard::Space) && !Keyboard::isKeyPressed(Keyboard::R) && !Keyboard::isKeyPressed(Keyboard::Escape));

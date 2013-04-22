@@ -239,7 +239,7 @@ void Player::updatePlayer()
 		stopCrashSound();
 
 		if (initExplosion){
-			for (int i = 0; i < 100; i++){
+			for (int i = 0; i < 200; i++){
 				crashDebrisSpeed2.push_back(Vector2f(getRandom(-2, 2), getRandom(-2, 2)));
 
 				crashDebris2.push_back(RectangleShape());
@@ -297,7 +297,7 @@ void Player::updatePlayer()
 
 		initExplosion = false;
 
-		if (Keyboard::isKeyPressed(Keyboard::R) || Keyboard::isKeyPressed(Keyboard::Space)){
+		if (Keyboard::isKeyPressed(Keyboard::R)){
 			setCrashState(true);
 			setExplosionState(false);
 		}

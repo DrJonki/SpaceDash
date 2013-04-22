@@ -746,6 +746,7 @@ void MenuClass::creditsMenu(RenderWindow &window, bool init)
 		ss << "Special thanks!\n";
 		ss << "    Ilari \"Ilgoth\" Nikkarikoski\n\n";
 		ss << "    Nooobody\n\n";
+		ss << "    Bucky Roberts\n\n";
 		ss << "    Laurent Gomila, the\n";
 		ss << "    creator of SFML\n\n";
 		ss << "    Students and staff\n";

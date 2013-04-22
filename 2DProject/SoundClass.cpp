@@ -83,7 +83,7 @@ void SoundClass::updateMusic()
 				break;
 			case 2:
 				music.openFromFile("Resources/Audio/music2.wav");
-				music.setVolume(75); //Set
+				music.setVolume(85); //Set
 				break;
 			case 3:
 				music.openFromFile("Resources/Audio/music3.wav");

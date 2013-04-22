@@ -131,13 +131,13 @@ void OtherObjects::initBonusObjects()
 
 void OtherObjects::updateBonusObjects()
 {
-	starSprite.move(-getObstacleBaseSpeed(), 0);
+	if (starSprite.getPosition().x <= VideoMode::getDesktopMode().width + 100 || !getExplosionState()) starSprite.move(-getObstacleBaseSpeed(), 0);
 	if (starSprite.getPosition().x <= -50) starSprite.setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + (2500 / difficulty)), getRandom(100, VideoMode::getDesktopMode().height - 100));
 
-	fuelIconSprite[1].move(-getObstacleBaseSpeed(), 0);
+	if (fuelIconSprite[1].getPosition().x <= VideoMode::getDesktopMode().width + 100 || !getExplosionState()) fuelIconSprite[1].move(-getObstacleBaseSpeed(), 0);
 	if (fuelIconSprite[1].getPosition().x <= -50) fuelIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + (6000 / difficulty)), getRandom(100, VideoMode::getDesktopMode().height - 100));
 
-	if (!hardcore) healthIconSprite[1].move(-getObstacleBaseSpeed(), 0);
+	if (!hardcore && (healthIconSprite[1].getPosition().x <= VideoMode::getDesktopMode().width + 100 || !getExplosionState())) healthIconSprite[1].move(-getObstacleBaseSpeed(), 0);
 	if (healthIconSprite[1].getPosition().x <= -50) healthIconSprite[1].setPosition(getRandom(VideoMode::getDesktopMode().width + 100, VideoMode::getDesktopMode().width + (15000 / difficulty)), getRandom(100, VideoMode::getDesktopMode().height - 100));
 }
 
