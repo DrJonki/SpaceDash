@@ -55,7 +55,7 @@ void OtherObjects::initBackground()
 		backgroundStar[i].setSize(Vector2f(ramNum, ramNum));
 		backgroundStar[i].setPosition(getRandom(-1, VideoMode::getDesktopMode().width + 1), getRandom(0, VideoMode::getDesktopMode().height));
 
-		starSpeed[i] = -(getRandom(1.0f, 5.0f));
+		starSpeed[i] = -(getRandom(1.0f, 3.0f));
 	}
 }
 
