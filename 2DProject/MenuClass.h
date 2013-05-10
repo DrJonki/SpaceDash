@@ -54,7 +54,7 @@ private:
 	Text backButtonText;
 	//Sub menu texts
 	Text scoreText[7];
-	Text optionsText[9];
+	Text optionsText[13];
 	Text creditsText[2];
 	Text infoText;
 	Text resetText;

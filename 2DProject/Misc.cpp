@@ -97,6 +97,7 @@ void Misc::readSettingsFromFile()
 	hardcore = false;
 
 	showParticles = true;
+	controlScheme = 1;
 
 	playSound = true;
 	playMusic = true;
@@ -114,9 +115,9 @@ void Misc::readSettingsFromFile()
 				std::getline(file, string);
 				vSync = std::atoi(string.c_str());
 			}
-			if (count == 1){ //vSync
+			if (count == 1){ //Control scheme
 				std::getline(file, string);
-				showParticles = std::atoi(string.c_str());
+				controlScheme = std::atoi(string.c_str());
 			}
 			else if (count == 2){ //Difficulty
 				std::getline(file, string);
@@ -150,7 +151,7 @@ void Misc::writeSettingsToFile()
 	std::ofstream file;
 	file.open(path);
 	file << vSync << std::endl;	//vSync
-	file << showParticles << std::endl;
+	file << controlScheme << std::endl;
 	file << difficulty << std::endl;	//Difficulty
 	file << hardcore << std::endl;		//HardCore
 	file << showParticles << std::endl; //Show particles

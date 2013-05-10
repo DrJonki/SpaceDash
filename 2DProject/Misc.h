@@ -65,6 +65,7 @@ using namespace sf;
 		bool hardcore;
 
 		bool showParticles;
+		short controlScheme;
 
 		bool playSound;
 		bool playMusic;

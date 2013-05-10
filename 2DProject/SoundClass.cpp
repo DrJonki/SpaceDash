@@ -26,40 +26,40 @@ SoundClass::SoundClass()
 	music.setVolume(0);
 	menuMusic.setVolume(0);
 
-	alarmSoundBuffer.loadFromFile("Resources/Audio/alarm.wav");
+	alarmSoundBuffer.loadFromFile("Resources/Audio/alarm.ogg");
 	alarmSound.setBuffer(alarmSoundBuffer);
 	alarmSound.setVolume(80);
 	alarmSound.setPitch(1.4);
 
-	scoreSoundBuffer.loadFromFile("Resources/Audio/scoresound.wav");
+	scoreSoundBuffer.loadFromFile("Resources/Audio/scoresound.ogg");
 	scoreSound.setBuffer(scoreSoundBuffer);
 	scoreSound.setVolume(70);
 	scoreSound.setPitch(1.2);
 
-	fuelSoundBuffer.loadFromFile("Resources/Audio/fuelsound.wav");
+	fuelSoundBuffer.loadFromFile("Resources/Audio/fuelsound.ogg");
 	fuelSound.setBuffer(fuelSoundBuffer);
 	fuelSound.setVolume(99);
 	fuelSound.setPitch(1.5);
 
-	healSoundBuffer.loadFromFile("Resources/Audio/healsound.wav");
+	healSoundBuffer.loadFromFile("Resources/Audio/healsound.ogg");
 	healSound.setBuffer(healSoundBuffer);
 	healSound.setVolume(99);
 	healSound.setPitch(1.2);
 
-	shutdownSoundBuffer.loadFromFile("Resources/Audio/shutdown.wav");
+	shutdownSoundBuffer.loadFromFile("Resources/Audio/shutdown.ogg");
 	shutdownSound.setBuffer(shutdownSoundBuffer);
 	shutdownSound.setVolume(90);
 	shutdownSound.setPitch(0.9);
 
-	rocketSoundBuffer.loadFromFile("Resources/Audio/rocketsound.wav");
+	rocketSoundBuffer.loadFromFile("Resources/Audio/rocketsound.ogg");
 	rocketSound.setBuffer(rocketSoundBuffer);
 	rocketSound.setVolume(90);
 
-	explosionSoundBuffer.loadFromFile("Resources/Audio/explosion.wav");
+	explosionSoundBuffer.loadFromFile("Resources/Audio/explosion.ogg");
 	explosionSound.setBuffer(explosionSoundBuffer);
 	explosionSound.setVolume(80);
 
-	crashSoundBuffer.loadFromFile("Resources/Audio/crashsound.wav");
+	crashSoundBuffer.loadFromFile("Resources/Audio/crashsound.ogg");
 	crashSound.setBuffer(crashSoundBuffer);
 	crashSound.setVolume(99);
 
@@ -78,39 +78,39 @@ void SoundClass::updateMusic()
 
 		switch (number){
 			case 1:
-				music.openFromFile("Resources/Audio/music1.wav");
+				music.openFromFile("Resources/Audio/music1.ogg");
 				music.setVolume(70); //Set
 				break;
 			case 2:
-				music.openFromFile("Resources/Audio/music2.wav");
+				music.openFromFile("Resources/Audio/music2.ogg");
 				music.setVolume(85); //Set
 				break;
 			case 3:
-				music.openFromFile("Resources/Audio/music3.wav");
+				music.openFromFile("Resources/Audio/music3.ogg");
 				music.setVolume(45); //Set
 				break;
 			case 4:
-				music.openFromFile("Resources/Audio/music4.wav");
+				music.openFromFile("Resources/Audio/music4.ogg");
 				music.setVolume(37); //Set
 				break;
 			case 5:
-				music.openFromFile("Resources/Audio/music5.wav");
+				music.openFromFile("Resources/Audio/music5.ogg");
 				music.setVolume(57); //Set
 				break;
 			case 6:
-				music.openFromFile("Resources/Audio/music6.wav");
+				music.openFromFile("Resources/Audio/music6.ogg");
 				music.setVolume(47); //Set
 				break;
 			case 7:
-				music.openFromFile("Resources/Audio/music7.wav");
+				music.openFromFile("Resources/Audio/music7.ogg");
 				music.setVolume(37); //Set
 				break;
 			case 8:
-				music.openFromFile("Resources/Audio/music8.wav");
+				music.openFromFile("Resources/Audio/music8.ogg");
 				music.setVolume(60); //Set
 				break;
 			default:
-				music.openFromFile("Resources/Audio/music7.wav");
+				music.openFromFile("Resources/Audio/music7.ogg");
 				music.setVolume(37); //Set
 				break;
 		}
@@ -123,7 +123,7 @@ void SoundClass::updateMenuMusic()
 	if (menuMusic.getVolume() < 75) menuMusic.setVolume(menuMusic.getVolume() + 0.2);
 
 	if (menuMusic.getStatus() == sf::Music::Stopped && playMusic){
-		menuMusic.openFromFile("Resources/Audio/menumusic.wav");
+		menuMusic.openFromFile("Resources/Audio/menumusic.ogg");
 		menuMusic.play();
 	}
 }
@@ -188,7 +188,7 @@ void SoundClass::updateRocketSound()
 		rocketSound.play();
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::Space)){
+	if (Keyboard::isKeyPressed(Keyboard::Space) || controlScheme == 2 || controlScheme == 3){
 		rocketSound.setVolume(50);
 	}
 	else {

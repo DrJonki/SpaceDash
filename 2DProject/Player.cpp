@@ -376,27 +376,63 @@ void Player::updatePlayer()
 	}
 
 	if (getPlayerFuel() > 0 && getPlayerHealth() > 0){
-		if (Keyboard::isKeyPressed(Keyboard::Space)){
-			if (playerRotation >= -30){
-				playerRotation -= 15;
-				if (playerRotation < -30) playerRotation = playerRotation - (playerRotation + 30);
-				playerSprite.setRotation(playerRotation);
-			}
 
-			playerSprite.move(0, baseClimingSpeed); //Climing speed is always constant
+		if (controlScheme == 1){
+			if (Keyboard::isKeyPressed(Keyboard::Space)){
+				if (playerRotation >= -30){
+					playerRotation -= 15;
+					if (playerRotation < -30) playerRotation = playerRotation - (playerRotation + 30);
+					playerSprite.setRotation(playerRotation);
+				}
+
+				playerSprite.move(0, baseClimingSpeed); //Climing speed is always constant
 	
-			playerSpeed = -(baseFallingSpeed +3); //Set speed value so that transition from climing to falling feels smooth
-		}
-		else {
-			if (playerRotation <= 20){
-				playerRotation += 5;
-				playerSprite.setRotation(playerRotation);
+				playerSpeed = -(baseFallingSpeed +3); //Set speed value so that transition from climing to falling feels smooth
 			}
+			else {
+				if (playerRotation <= 20){
+					playerRotation += 5;
+					playerSprite.setRotation(playerRotation);
+				}
 
-			playerSprite.move(0, baseFallingSpeed + playerSpeed);
+				playerSprite.move(0, baseFallingSpeed + playerSpeed);
 		
-			if (playerSpeed <= 0) playerSpeed = playerSpeed + 1;
-			else if ((playerSpeed <= baseFallingSpeed) && (playerSpeed > 0)) playerSpeed = playerSpeed * 1.02;
+				if (playerSpeed <= 0) playerSpeed = playerSpeed + 1;
+				else if ((playerSpeed <= baseFallingSpeed) && (playerSpeed > 0)) playerSpeed = playerSpeed * 1.02;
+			}
+		}
+		else if (controlScheme == 2){
+			if (Keyboard::isKeyPressed(Keyboard::Left) && playerRotation >= -30){
+				playerRotation -= 3;
+			}
+			
+			else if (Keyboard::isKeyPressed(Keyboard::Right) && playerRotation <= 30){
+				playerRotation += 3;
+			}
+			else if (Keyboard::isKeyPressed(Keyboard::Space)){
+				playerRotation = 0;
+			}
+			
+			playerSprite.setRotation(playerRotation);
+			playerSprite.move(0, playerRotation / 3);
+		}
+		else if (controlScheme == 3){
+			if (Keyboard::isKeyPressed(Keyboard::Left)){
+				if (playerRotation >= -30) playerRotation -= 5;
+			}
+			
+			else if (Keyboard::isKeyPressed(Keyboard::Right)){
+				if (playerRotation <= 30) playerRotation += 5;
+			}
+			else {
+				if (playerRotation < 0){
+					playerRotation += 5;
+				}
+				else if (playerRotation > 0) playerRotation -= 5;
+			}
+			
+			playerSprite.setRotation(playerRotation);
+			playerSprite.move(0, playerRotation / 3);
 		}
 
 		if (getPlayerHealth() > 0) updateRocketSound();
@@ -418,7 +454,7 @@ void Player::updatePlayer()
 	
 
 	//Flame Sprite Bottom
-	flameSpriteBottom.setPosition(playerSprite.getPosition().x - (41 - -(playerRotation / 2)), playerSprite.getPosition().y - (-20 - -(playerRotation)));
+	flameSpriteBottom.setPosition((playerSprite.getPosition().x - 45) - (playerRotation / 2.4), (playerSprite.getPosition().y + 28) + -(playerRotation / 1.05));
 	flameSpriteBottom.setRotation(playerSprite.getRotation());
 
 	if (animAscend){
@@ -434,7 +470,7 @@ void Player::updatePlayer()
 
 
 	//Flame Sprite Top
-	flameSpriteTop.setPosition(playerSprite.getPosition().x - (40 + -(playerRotation / 12)), playerSprite.getPosition().y - (10 - -(playerRotation)));
+	flameSpriteTop.setPosition(playerSprite.getPosition().x - 45, (playerSprite.getPosition().y - 7) + -(playerRotation / 1.05));
 	flameSpriteTop.setRotation(playerSprite.getRotation());
 
 	if (animAscend){
@@ -535,7 +571,7 @@ void Player::drawFlames(RenderWindow &window, bool paused)
 	if(getPlayerFuel() > 0){
 		window.draw(flameSpriteTop);
 
-		if (Keyboard::isKeyPressed(Keyboard::Space) || paused){
+		if (Keyboard::isKeyPressed(Keyboard::Space) || paused || controlScheme == 2 || controlScheme == 3){
 			window.draw(flameSpriteBottom);
 		}
 	}

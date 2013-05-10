@@ -265,8 +265,14 @@ void MenuClass::updateGraphics(RenderWindow &menuWindow)
 		distanceLeftLogo += movement;
 	}
 
-	infoText.setPosition(Mouse::getPosition(menuWindow).x + 50, Mouse::getPosition(menuWindow).y);
-	infoBackground.setPosition(Mouse::getPosition(menuWindow).x + 45, Mouse::getPosition(menuWindow).y);
+	if (Mouse::getPosition().y < menuWindow.getSize().y / 2){
+		infoText.setPosition(Mouse::getPosition(menuWindow).x + 50, Mouse::getPosition(menuWindow).y);
+		infoBackground.setPosition(Mouse::getPosition(menuWindow).x + 45, Mouse::getPosition(menuWindow).y);
+	}
+	else if (Mouse::getPosition().y > menuWindow.getSize().y / 2){
+		infoText.setPosition(Mouse::getPosition(menuWindow).x + 50, Mouse::getPosition(menuWindow).y + infoText.getGlobalBounds().height);
+		infoBackground.setPosition(Mouse::getPosition(menuWindow).x + 45, Mouse::getPosition(menuWindow).y + infoText.getGlobalBounds().height);
+	}
 	
 
 	if (mouseIsOnButton(menuWindow, &playButtonText)) playButtonText.setColor(Color::Color(255, 255, 0));
@@ -513,7 +519,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[4].setString("Music (OFF)");
 		}
 		//Easy
-		optionsText[5].setPosition(50,  optionsText[4].getPosition().y + 50);
+		optionsText[5].setPosition(50,  optionsText[9].getPosition().y + 50);
 		optionsText[5].setFont(defaultFont);
 		optionsText[5].setCharacterSize(16);
 		if (difficulty == 1){
@@ -560,6 +566,50 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 			optionsText[8].setColor(Color::Cyan);
 			optionsText[8].setString("Hardcore (OFF)");
 		}
+
+		//Schemes
+		optionsText[9].setPosition(50,  optionsText[4].getPosition().y + 50);
+		optionsText[9].setFont(defaultFont);
+		optionsText[9].setCharacterSize(16);
+		optionsText[9].setColor(Color::Yellow);
+		optionsText[9].setString("Control scheme");
+
+		//Scheme 1
+		optionsText[10].setPosition(optionsText[9].getPosition().x + 180,  optionsText[9].getPosition().y);
+		optionsText[10].setFont(defaultFont);
+		optionsText[10].setCharacterSize(16);
+		if (controlScheme == 1){
+			optionsText[10].setColor(Color::Cyan);
+			optionsText[10].setString("1<-");
+		}
+		else{
+			optionsText[10].setColor(Color::Color(255, 128, 0));
+			optionsText[10].setString("1");
+		}
+		//Scheme 2
+		optionsText[11].setPosition(optionsText[9].getPosition().x + 220,  optionsText[9].getPosition().y);
+		optionsText[11].setFont(defaultFont);
+		optionsText[11].setCharacterSize(16);
+		if (controlScheme == 2){
+			optionsText[11].setColor(Color::Cyan);
+			optionsText[11].setString("2<-");
+		}
+		else{
+			optionsText[11].setColor(Color::Color(255, 128, 0));
+			optionsText[11].setString("2");
+		}
+		//Scheme 3
+		optionsText[12].setPosition(optionsText[9].getPosition().x + 260,  optionsText[9].getPosition().y);
+		optionsText[12].setFont(defaultFont);
+		optionsText[12].setCharacterSize(16);
+		if (controlScheme == 3){
+			optionsText[12].setColor(Color::Cyan);
+			optionsText[12].setString("3<-");
+		}
+		else{
+			optionsText[12].setColor(Color::Color(255, 128, 0));
+			optionsText[12].setString("3");
+		}
 	}
 
 	std::stringstream ss;
@@ -585,6 +635,7 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 				}
 			}
 		}
+		//Particles
 		if (mouseIsOnButton(window, &optionsText[2])){
 			infoText.setString("Enable/disable particle effects.\nPlease do not disable\nunless having problems");
 			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
@@ -711,12 +762,74 @@ void MenuClass::optionsMenu(RenderWindow &window, bool init)
 				}
 			}
 		}
+		//Schemes
+		if (mouseIsOnButton(window, &optionsText[9])){
+			infoText.setString("Click on the numbers\nto change the control scheme");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
+		}
+		//Scheme 1
+		if (mouseIsOnButton(window, &optionsText[10])){
+			infoText.setString("You'll move\nthe rocket using space bar.");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
+			while (window.pollEvent(e)){
+				if (e.type == Event::MouseButtonPressed){
+					controlScheme = 1;
+					optionsText[10].setColor(Color::Cyan);
+					optionsText[10].setString("1<-");
+					optionsText[11].setColor(Color::Color(255, 128, 0));
+					optionsText[11].setString("2");
+					optionsText[12].setColor(Color::Color(255, 128, 0));
+					optionsText[12].setString("3");
+				}
+			}
+		}
+		//Scheme 2
+		if (mouseIsOnButton(window, &optionsText[11])){
+			infoText.setString("You'll move the rocket\nusing the left & right\narrow keys. Course doesn't\nreset when key is released.");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
+			while (window.pollEvent(e)){
+				if (e.type == Event::MouseButtonPressed){
+					controlScheme = 2;
+					optionsText[10].setColor(Color::Color(255, 128, 0));
+					optionsText[10].setString("1");
+					optionsText[11].setColor(Color::Cyan);
+					optionsText[11].setString("2<-");
+					optionsText[12].setColor(Color::Color(255, 128, 0));
+					optionsText[12].setString("3");
+				}
+			}
+		}
+		//Scheme 3
+		if (mouseIsOnButton(window, &optionsText[12])){
+			infoText.setString("You'll move the rocket\nusing the left & right\narrow keys. Course will\nreset when key is released.");
+			infoBackground.setSize(Vector2f(infoText.getGlobalBounds().width + 8, infoText.getGlobalBounds().height + 8));
+			while (window.pollEvent(e)){
+				if (e.type == Event::MouseButtonPressed){
+					controlScheme = 3;
+					optionsText[10].setColor(Color::Color(255, 128, 0));
+					optionsText[10].setString("1");
+					optionsText[11].setColor(Color::Color(255, 128, 0));
+					optionsText[11].setString("2");
+					optionsText[12].setColor(Color::Cyan);
+					optionsText[12].setString("3<-");
+				}
+			}
+		}
 		while (window.pollEvent(e)){
 			if (e.type == Event::LostFocus) minimized = true;
 			else if (e.type == Event::GainedFocus) minimized = false;
 		}
+		
+		if (Mouse::getPosition(window).y < window.getSize().y / 2){
+			infoText.setPosition(Mouse::getPosition(window).x + 50, Mouse::getPosition(window).y);
+			infoBackground.setPosition(Mouse::getPosition(window).x + 45, Mouse::getPosition(window).y);
+		}
+		else if (Mouse::getPosition(window).y > window.getSize().y / 2){
+			infoText.setPosition(Mouse::getPosition(window).x + 50, Mouse::getPosition(window).y - infoText.getGlobalBounds().height);
+			infoBackground.setPosition(Mouse::getPosition(window).x + 45, Mouse::getPosition(window).y - infoText.getGlobalBounds().height);
+		}
 
-		for (int i = 0; i < 9; i++) window.draw(optionsText[i]);
+		for (int i = 0; i < 13; i++) window.draw(optionsText[i]);
 		window.draw(infoBackground);
 		window.draw(infoText);
 	}

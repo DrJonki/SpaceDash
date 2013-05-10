@@ -105,7 +105,11 @@ void TextClass::initScoreText()
 	pauseText[1].setColor(Color::Color(255, 153, 0));
 	pauseText[1].setPosition(pauseText[0].getPosition().x, pauseText[0].getPosition().y + 120);
 	infoText.setFont(defaultFont);
-	infoText.setString("------------------------------------------------------\nUSE SPACE BAR TO\nCONTROL THE ROCKET\n\nPRESS ESCAPE DURING\nGAMEPLAY TO PAUSE THE GAME\n\nSCORES WILL BE\nSAVED UPON EXIT\n------------------------------------------------------");
+	if (controlScheme == 1) infoText.setString("------------------------------------------------------\nUSE SPACE BAR TO\nCONTROL THE ROCKET\n\nPRESS ESCAPE DURING\nGAMEPLAY TO PAUSE THE GAME\n\nSCORES WILL BE\nSAVED UPON EXIT\n------------------------------------------------------");
+	else if (controlScheme == 2) infoText.setString("------------------------------------------------------\nUSE LEFT & RIGHT\nARROW KEYS TO\nCONTROL THE ROCKET.\nSPACE BAR RESETS\nTHE MOVEMENT VECTOR\n\nPRESS ESCAPE DURING\nGAMEPLAY TO PAUSE THE GAME\n\nSCORES WILL BE\nSAVED UPON EXIT\n------------------------------------------------------");
+	else if (controlScheme == 3) infoText.setString("------------------------------------------------------\nUSE LEFT & RIGHT\nARROW KEYS TO\nCONTROL THE ROCKET\n\nPRESS ESCAPE DURING\nGAMEPLAY TO PAUSE THE GAME\n\nSCORES WILL BE\nSAVED UPON EXIT\n------------------------------------------------------");
+	else infoText.setString("------------------------------------------------------\nUSE SPACE BAR TO\nCONTROL THE ROCKET\n\nPRESS ESCAPE DURING\nGAMEPLAY TO PAUSE THE GAME\n\nSCORES WILL BE\nSAVED UPON EXIT\n------------------------------------------------------");
+	
 	infoText.setCharacterSize(20);
 	infoText.setColor(Color::Cyan);
 	infoText.setPosition(50, pauseText[0].getPosition().y + 23);
